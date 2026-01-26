@@ -13,7 +13,7 @@ const FeeCollectionPage: React.FC = () => {
     const { students, fetchStudents } = useStudentStore();
 
     const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
-    const [selectedFeeId, setSelectedFeeId] = useState<string | null>(null);
+
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -72,7 +72,7 @@ const FeeCollectionPage: React.FC = () => {
                             <Select
                                 placeholder="Choose Fee"
                                 onChange={(value) => {
-                                    setSelectedFeeId(value);
+
                                     const fee = fees.find(f => f._id === value);
                                     if (fee) {
                                         form.setFieldsValue({ amountPaid: fee.amount });

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useAuthStore } from '../../store/authStore';
+
 import axiosInstance from '../../services/axios/authAxios';
 
 interface TimeSlot {

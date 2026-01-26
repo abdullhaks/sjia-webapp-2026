@@ -65,6 +65,11 @@ const admissionApi = {
         return response.data;
     },
 
+    async createAdmission(data: CreateAdmissionDto): Promise<Admission> {
+        const response = await axiosInstance.post('/admission', data);
+        return response.data;
+    },
+
     async getAdmission(id: string): Promise<Admission> {
         const response = await axiosInstance.get(`/admission/${id}`);
         return response.data;

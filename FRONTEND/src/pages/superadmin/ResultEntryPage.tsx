@@ -5,7 +5,7 @@ import { SaveOutlined } from '@ant-design/icons';
 import { useExamStore } from '../../store/examStore';
 import { useStudentStore } from '../../store/studentStore';
 import { useResultStore } from '../../store/resultStore';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
+
 
 const { Option } = Select;
 
