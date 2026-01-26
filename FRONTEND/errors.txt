@@ -1,0 +1,1 @@
+src/components/features/public/AcademicExcellenceSection.tsx(7,29): error TS6133: 'FaStar' is declared but its value is never read.
