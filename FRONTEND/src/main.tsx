@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ConfigProvider, App } from 'antd'
-import '@ant-design/v5-patch-for-react-19';
+// import '@ant-design/v5-patch-for-react-19';
 import AntdStaticProvider from './components/common/AntdStaticProvider'
 import AppRoot from './App.tsx'
 
