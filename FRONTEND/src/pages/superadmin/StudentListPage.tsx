@@ -95,7 +95,8 @@ const StudentListPage = () => {
             setIsModalOpen(false);
             setEditingStudent(null);
         } catch (error) {
-            // Error already handled in store
+            // Re-throw so the form can catch and display validation field errors natively
+            throw error;
         }
     };
 
@@ -105,7 +106,7 @@ const StudentListPage = () => {
     };
 
     // Filter students based on search and filters
-    const filteredStudents = students.filter((student) => {
+    const filteredStudents = (students || []).filter((student) => {
         const matchesSearch =
             searchText === '' ||
             student.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -113,7 +114,7 @@ const StudentListPage = () => {
             student.admissionNumber.toLowerCase().includes(searchText.toLowerCase());
 
         const matchesProgram = programFilter === 'all' || student.program === programFilter;
-        const matchesStatus = statusFilter === 'active' ? student.status === 'Active' : student.status === statusFilter;
+        const matchesStatus = statusFilter === 'active' ? (student.status === 'Active' || !student.status) : student.status === statusFilter;
 
         return matchesSearch && matchesProgram && matchesStatus;
     });
@@ -266,9 +267,9 @@ const StudentListPage = () => {
                     <Button icon={<FaFilter />}>More Filters</Button>
                 </div>
 
-                {loading && students.length === 0 ? (
+                {loading && (!students || students.length === 0) ? (
                     <LoadingSpinner size="lg" />
-                ) : filteredStudents.length === 0 ? (
+                ) : (!filteredStudents || filteredStudents.length === 0) ? (
                     <EmptyState
                         icon={<FaInbox />}
                         title="No Students Found"
@@ -304,7 +305,7 @@ const StudentListPage = () => {
                 onCancel={handleFormCancel}
                 footer={null}
                 width={800}
-                destroyOnClose
+                destroyOnHidden
             >
                 <StudentForm
                     initialValues={editingStudent || undefined}

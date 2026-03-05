@@ -12,6 +12,10 @@ export interface Result {
 }
 
 const resultApi = {
+    async getAllResults(): Promise<Result[]> {
+        const response = await axiosInstance.get('/results');
+        return response.data;
+    },
     async getMyResults(): Promise<Result[]> {
         const response = await axiosInstance.get('/result/my/history');
         return response.data;
@@ -24,6 +28,11 @@ const resultApi = {
 
     async getTopPerformers(limit: number = 5): Promise<Result[]> {
         const response = await axiosInstance.get('/public/result/toppers', { params: { limit } });
+        return response.data;
+    },
+
+    async searchPublicResults(query: string): Promise<Result[]> {
+        const response = await axiosInstance.get('/public/result/search', { params: { q: query } });
         return response.data;
     }
 };

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, User, Phone, Mail, MapPin, Calendar, Book, Shield } from 'lucide-react';
 import { Student } from '../../services/api/student.api';
 import Avatar from './Avatar';
+import StudentFolderSection from '../features/student/StudentFolderSection';
 
 interface StudentDetailModalProps {
     student: Student | null;
@@ -151,6 +152,9 @@ const StudentDetailModal: React.FC<StudentDetailModalProps> = ({ student, isOpen
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Documents and Folder Section for Admin */}
+                            <StudentFolderSection studentId={student._id} />
                         </div>
                     </motion.div>
                 </div>

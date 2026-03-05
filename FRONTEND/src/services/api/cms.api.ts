@@ -125,3 +125,13 @@ export const updateSiteContent = async (key: string, data: UpdateSiteContentDto)
     const response = await axiosInstance.patch(`/content/site-content/${key}`, data);
     return response.data;
 };
+
+// Media Manager (Raw files)
+export const getMediaFiles = async (): Promise<any[]> => {
+    const response = await axiosInstance.get('/content/media');
+    return response.data;
+};
+
+export const deleteMediaFile = async (url: string): Promise<void> => {
+    await axiosInstance.delete('/content/media', { params: { url } });
+};

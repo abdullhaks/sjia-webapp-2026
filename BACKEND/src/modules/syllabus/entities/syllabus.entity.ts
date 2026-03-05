@@ -40,6 +40,9 @@ export class Syllabus {
 
     @Prop({ default: true })
     isActive: boolean;
+
+    @Prop({ type: [{ term: String, chapters: [{ title: String, topics: [{ title: String, isCompleted: Boolean }] }] }] })
+    structure: any[];
 }
 
 export const SyllabusSchema = SchemaFactory.createForClass(Syllabus);

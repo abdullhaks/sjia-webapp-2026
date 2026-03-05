@@ -7,6 +7,8 @@ import { FaTimes, FaCamera, FaSpinner } from 'react-icons/fa';
 import axiosInstance from '../../../services/axios/authAxios';
 import { useStudentStore } from '../../../store/studentStore';
 
+import { useAuthStore } from '../../../store/authStore';
+
 const studentProfileSchema = z.object({
     phone: z.string().min(10, 'Phone number must be at least 10 digits'),
     email: z.string().email('Invalid email address'),
@@ -24,6 +26,7 @@ interface EditStudentProfileModalProps {
 
 const EditStudentProfileModal: React.FC<EditStudentProfileModalProps> = ({ isOpen, onClose, currentStudent }) => {
     const { fetchCurrentStudent } = useStudentStore();
+    const { checkAuth } = useAuthStore();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [previewImage, setPreviewImage] = useState<string | null>(currentStudent.photoUrl);
@@ -66,6 +69,7 @@ const EditStudentProfileModal: React.FC<EditStudentProfileModalProps> = ({ isOpe
             });
 
             await fetchCurrentStudent();
+            await checkAuth(); // Update global auth user, specifically photoUrl
             onClose();
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to update profile');

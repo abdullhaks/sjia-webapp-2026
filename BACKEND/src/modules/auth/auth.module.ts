@@ -6,12 +6,20 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { User, UserSchema } from '../../database/schemas/user.schema';
+import { SuperAdmin, SuperAdminSchema } from '../../database/schemas/superadmin.schema';
+import { Student, StudentSchema } from '../student/schemas/student.schema';
+import { Staff, StaffSchema } from '../staff/schemas/staff.schema';
+import { SharedModule } from '../../shared/shared.module';
 
 @Module({
     imports: [
         PassportModule,
-        MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+        MongooseModule.forFeature([
+            { name: SuperAdmin.name, schema: SuperAdminSchema },
+            { name: Student.name, schema: StudentSchema },
+            { name: Staff.name, schema: StaffSchema }
+        ]),
+        SharedModule,
         JwtModule.registerAsync({
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({

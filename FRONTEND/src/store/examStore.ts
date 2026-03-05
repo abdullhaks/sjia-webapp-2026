@@ -10,6 +10,7 @@ interface ExamState {
     fetchUpcomingExams: () => Promise<void>;
     fetchAllExams: (status?: string) => Promise<void>;
     createExam: (data: any) => Promise<void>;
+    updateExamStatus: (id: string, status: string) => Promise<void>;
     deleteExam: (id: string) => Promise<void>;
     clearError: () => void;
 }
@@ -24,7 +25,7 @@ export const useExamStore = create<ExamState>((set) => ({
         set({ loading: true, error: null });
         try {
             const upcomingExams = await examApi.getMyUpcomingExams();
-            set({ upcomingExams, loading: false });
+            set({ upcomingExams: Array.isArray(upcomingExams) ? upcomingExams : [], loading: false });
         } catch (error: any) {
             set({ error: error.response?.data?.message || 'Failed to fetch upcoming exams', loading: false });
         }
@@ -34,7 +35,7 @@ export const useExamStore = create<ExamState>((set) => ({
         set({ loading: true, error: null });
         try {
             const exams = await examApi.getAllExams(status);
-            set({ exams, loading: false });
+            set({ exams: Array.isArray(exams) ? exams : [], loading: false });
         } catch (error: any) {
             set({ error: error.response?.data?.message || 'Failed to fetch exams', loading: false });
         }
@@ -44,9 +45,23 @@ export const useExamStore = create<ExamState>((set) => ({
         set({ loading: true, error: null });
         try {
             const newExam = await examApi.createExam(data);
-            set((state) => ({ exams: [...state.exams, newExam], loading: false }));
+            set((state) => ({ exams: [...(Array.isArray(state.exams) ? state.exams : []), newExam], loading: false }));
         } catch (error: any) {
             set({ error: error.response?.data?.message || 'Failed to create exam', loading: false });
+            throw error;
+        }
+    },
+
+    updateExamStatus: async (id: string, status: string) => {
+        set({ loading: true, error: null });
+        try {
+            const updatedExam = await examApi.updateExamStatus(id, status);
+            set((state) => ({
+                exams: state.exams.map((e) => (e._id === id ? updatedExam : e)),
+                loading: false,
+            }));
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || 'Failed to update exam status', loading: false });
             throw error;
         }
     },

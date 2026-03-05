@@ -5,6 +5,7 @@ interface CMSState {
     gallery: cmsApi.GalleryItem[];
     leadership: cmsApi.LeadershipMember[];
     siteContent: cmsApi.SiteContent[];
+    media: any[];
     loading: boolean;
     error: string | null;
     uploadProgress: number;
@@ -25,6 +26,10 @@ interface CMSState {
     fetchSiteContent: () => Promise<void>;
     updateSiteContent: (key: string, data: cmsApi.UpdateSiteContentDto) => Promise<void>;
 
+    // Media raw files actions
+    fetchMediaFiles: () => Promise<void>;
+    deleteMediaFile: (url: string) => Promise<void>;
+
     // File upload
     uploadFile: (file: File) => Promise<{ url: string; filename: string; originalName: string }>;
 
@@ -37,6 +42,7 @@ export const useCMSStore = create<CMSState>((set) => ({
     gallery: [],
     leadership: [],
     siteContent: [],
+    media: [],
     loading: false,
     error: null,
     uploadProgress: 0,
@@ -159,6 +165,30 @@ export const useCMSStore = create<CMSState>((set) => ({
             }));
         } catch (error: any) {
             set({ error: error.response?.data?.message || 'Failed to update site content', loading: false });
+            throw error;
+        }
+    },
+
+    fetchMediaFiles: async () => {
+        set({ loading: true, error: null });
+        try {
+            const media = await cmsApi.getMediaFiles();
+            set({ media, loading: false });
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || 'Failed to fetch media files', loading: false });
+        }
+    },
+
+    deleteMediaFile: async (url) => {
+        set({ loading: true, error: null });
+        try {
+            await cmsApi.deleteMediaFile(url);
+            set((state) => ({
+                media: state.media.filter((m) => m.url !== url),
+                loading: false,
+            }));
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || 'Failed to delete media file', loading: false });
             throw error;
         }
     },

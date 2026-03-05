@@ -1,20 +1,83 @@
-import React, { useState } from 'react';
-import { Card, Form, Input, Button, Avatar, Upload, Tabs } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, Form, Input, Button, Avatar, Upload, Tabs, Tag } from 'antd';
 import { message } from '../../components/common/AntdStaticProvider';
-import { UserOutlined, UploadOutlined, SafetyCertificateOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
+import { UserOutlined, UploadOutlined, SafetyCertificateOutlined, MailOutlined } from '@ant-design/icons';
+import { useAuthStore } from '../../store/authStore';
+import authApi from '../../services/api/auth.api';
 
 const ProfilePage: React.FC = () => {
+    const { user, checkAuth } = useAuthStore();
     const [loading, setLoading] = useState(false);
+    const [pwdLoading, setPwdLoading] = useState(false);
     const [form] = Form.useForm();
+    const [pwdForm] = Form.useForm();
+    const [file, setFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-    const onFinish = (values: any) => {
+    useEffect(() => {
+        if (user) {
+            form.setFieldsValue({
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+            });
+            if (user.photoUrl) setPreviewUrl(user.photoUrl);
+        }
+    }, [user, form]);
+
+    const handleProfileSubmit = async (values: any) => {
         setLoading(true);
-        console.log('Update Profile:', values);
-        setTimeout(() => {
+        try {
+            const formData = new FormData();
+            formData.append('firstName', values.firstName);
+            formData.append('lastName', values.lastName);
+            if (file) {
+                formData.append('photo', file);
+            }
+
+            await authApi.updateProfile(formData);
             message.success('Profile updated successfully!');
+            await checkAuth(); // Re-fetch updated auth state
+        } catch (error: any) {
+            message.error(error.response?.data?.message || 'Failed to update profile');
+        } finally {
             setLoading(false);
-        }, 1000);
+        }
     };
+
+    const handlePasswordSubmit = async (values: any) => {
+        setPwdLoading(true);
+        try {
+            await authApi.changePassword({
+                oldPassword: values.currentPassword,
+                newPassword: values.newPassword,
+            });
+            message.success('Password updated successfully!');
+            pwdForm.resetFields();
+        } catch (error: any) {
+            message.error(error.response?.data?.message || 'Failed to update password');
+        } finally {
+            setPwdLoading(false);
+        }
+    };
+
+    const beforeUpload = (file: File) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            message.error('You can only upload JPG/PNG file!');
+            return Upload.LIST_IGNORE;
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('Image must smaller than 2MB!');
+            return Upload.LIST_IGNORE;
+        }
+        setFile(file);
+        setPreviewUrl(URL.createObjectURL(file));
+        return false; // Prevent auto upload
+    };
+
+    if (!user) return null;
 
     return (
         <div className="max-w-4xl mx-auto space-y-6">
@@ -24,12 +87,12 @@ const ProfilePage: React.FC = () => {
                 {/* Profile Card */}
                 <Card className="md:col-span-1 text-center shadow-sm">
                     <div className="flex flex-col items-center space-y-4">
-                        <Avatar size={100} icon={<UserOutlined />} className="bg-primary/10 text-primary" />
+                        <Avatar size={120} src={previewUrl} icon={!previewUrl && <UserOutlined />} className="bg-primary/10 text-primary" />
                         <div>
-                            <h2 className="text-xl font-bold text-gray-800">Administrator</h2>
-                            <p className="text-gray-500">Super Admin</p>
+                            <h2 className="text-xl font-bold text-gray-800">{user.firstName} {user.lastName}</h2>
+                            <Tag color="green" className="mt-2 uppercase tracking-widest">{user.role}</Tag>
                         </div>
-                        <Upload showUploadList={false}>
+                        <Upload showUploadList={false} beforeUpload={beforeUpload}>
                             <Button icon={<UploadOutlined />}>Change Avatar</Button>
                         </Upload>
                     </div>
@@ -45,33 +108,30 @@ const ProfilePage: React.FC = () => {
                                 <Form
                                     layout="vertical"
                                     form={form}
-                                    onFinish={onFinish}
-                                    initialValues={{
-                                        name: 'Administrator',
-                                        email: 'admin@sjia.edu',
-                                        phone: '+91 9876543210'
-                                    }}
+                                    onFinish={handleProfileSubmit}
                                 >
-                                    <Form.Item label="Full Name" name="name" rules={[{ required: true }]}>
-                                        <Input prefix={<UserOutlined />} />
-                                    </Form.Item>
-                                    <Form.Item label="Email" name="email" rules={[{ required: true, type: 'email' }]}>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <Form.Item label="First Name" name="firstName" rules={[{ required: true }]}>
+                                            <Input prefix={<UserOutlined />} />
+                                        </Form.Item>
+                                        <Form.Item label="Last Name" name="lastName" rules={[{ required: true }]}>
+                                            <Input prefix={<UserOutlined />} />
+                                        </Form.Item>
+                                    </div>
+                                    <Form.Item label="Email Account (Locked)" name="email">
                                         <Input prefix={<MailOutlined />} disabled />
                                     </Form.Item>
-                                    <Form.Item label="Phone Number" name="phone">
-                                        <Input prefix={<PhoneOutlined />} />
-                                    </Form.Item>
-                                    <Button type="primary" htmlType="submit" loading={loading}>
-                                        Save Changes
+                                    <Button type="primary" htmlType="submit" loading={loading} className="w-full mt-4">
+                                        Save Profile Changes
                                     </Button>
                                 </Form>
                             )
                         },
                         {
                             key: '2',
-                            label: 'Security',
+                            label: 'Security & Password',
                             children: (
-                                <Form layout="vertical" onFinish={onFinish}>
+                                <Form layout="vertical" form={pwdForm} onFinish={handlePasswordSubmit}>
                                     <Form.Item label="Current Password" name="currentPassword" rules={[{ required: true }]}>
                                         <Input.Password prefix={<SafetyCertificateOutlined />} />
                                     </Form.Item>
@@ -96,8 +156,8 @@ const ProfilePage: React.FC = () => {
                                     >
                                         <Input.Password prefix={<SafetyCertificateOutlined />} />
                                     </Form.Item>
-                                    <Button type="primary" htmlType="submit" loading={loading} danger>
-                                        Update Password
+                                    <Button type="primary" htmlType="submit" loading={pwdLoading} danger className="w-full mt-4">
+                                        Update Password Protection
                                     </Button>
                                 </Form>
                             )

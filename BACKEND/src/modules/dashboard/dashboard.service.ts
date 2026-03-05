@@ -73,7 +73,7 @@ export class DashboardService {
         const recentAdmissions = await this.admissionModel.find()
             .sort({ createdAt: -1 })
             .limit(5)
-            .select('firstName lastName createdAt applicationId');
+            .select('studentName createdAt applicationId');
 
         // Fetch recent leaves
         const recentLeaves = await this.leaveModel.find()
@@ -85,7 +85,7 @@ export class DashboardService {
         const activities = [
             ...recentAdmissions.map(a => ({
                 id: a._id,
-                user: `${a.firstName} ${a.lastName}`,
+                user: a.studentName,
                 action: 'applied for admission',
                 time: a.createdAt,
                 type: 'admission'

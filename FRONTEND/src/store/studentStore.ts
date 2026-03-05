@@ -13,6 +13,10 @@ interface StudentState {
     createStudent: (data: CreateStudentDto | FormData) => Promise<Student>;
     updateStudent: (id: string, data: UpdateStudentDto | FormData) => Promise<Student>;
     deleteStudent: (id: string) => Promise<void>;
+    addFolderItemMe: (data: any | FormData) => Promise<Student>;
+    removeFolderItemMe: (itemId: string) => Promise<Student>;
+    addFolderItem: (id: string, data: any | FormData) => Promise<Student>;
+    removeFolderItem: (id: string, itemId: string) => Promise<Student>;
     clearError: () => void;
 }
 
@@ -27,7 +31,7 @@ export const useStudentStore = create<StudentState>((set) => ({
         set({ loading: true, error: null });
         try {
             const students = await studentApi.getStudents(query);
-            set({ students, loading: false });
+            set({ students: Array.isArray(students) ? students : [], loading: false });
         } catch (error: any) {
             set({
                 error: error.response?.data?.message || 'Failed to fetch students',
@@ -40,7 +44,7 @@ export const useStudentStore = create<StudentState>((set) => ({
         set({ loading: true, error: null });
         try {
             const councilMembers = await studentApi.getCouncilMembers();
-            set({ councilMembers, loading: false });
+            set({ councilMembers: Array.isArray(councilMembers) ? councilMembers : [], loading: false });
         } catch (error: any) {
             set({
                 error: error.response?.data?.message || 'Failed to fetch council members',
@@ -115,6 +119,60 @@ export const useStudentStore = create<StudentState>((set) => ({
                 error: error.response?.data?.message || 'Failed to delete student',
                 loading: false,
             });
+            throw error;
+        }
+    },
+
+    addFolderItemMe: async (data: any | FormData) => {
+        set({ loading: true, error: null });
+        try {
+            const updatedStudent = await studentApi.addFolderItemMe(data);
+            set({ currentStudent: updatedStudent, loading: false });
+            return updatedStudent;
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || 'Failed to add item', loading: false });
+            throw error;
+        }
+    },
+
+    removeFolderItemMe: async (itemId: string) => {
+        set({ loading: true, error: null });
+        try {
+            const updatedStudent = await studentApi.removeFolderItemMe(itemId);
+            set({ currentStudent: updatedStudent, loading: false });
+            return updatedStudent;
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || 'Failed to remove item', loading: false });
+            throw error;
+        }
+    },
+
+    addFolderItem: async (id: string, data: any | FormData) => {
+        set({ loading: true, error: null });
+        try {
+            const updatedStudent = await studentApi.addFolderItem(id, data);
+            set((state) => ({
+                students: state.students.map((s) => s._id === id ? updatedStudent : s),
+                loading: false,
+            }));
+            return updatedStudent;
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || 'Failed to add item', loading: false });
+            throw error;
+        }
+    },
+
+    removeFolderItem: async (id: string, itemId: string) => {
+        set({ loading: true, error: null });
+        try {
+            const updatedStudent = await studentApi.removeFolderItem(id, itemId);
+            set((state) => ({
+                students: state.students.map((s) => s._id === id ? updatedStudent : s),
+                loading: false,
+            }));
+            return updatedStudent;
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || 'Failed to remove item', loading: false });
             throw error;
         }
     },

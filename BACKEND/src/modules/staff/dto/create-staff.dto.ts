@@ -76,4 +76,15 @@ export class CreateStaffDto {
     @IsOptional()
     @IsString()
     photoUrl?: string;
+
+    @IsOptional()
+    @IsString()
+    password?: string;
+
+    @IsOptional()
+    @IsString()
+    passwordMode?: string;
+
+    @IsOptional()
+    sendEmail?: any; // string or boolean
 }

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { UserRole } from '../../../shared/enums/roles.enum';
 
 export type StaffDocument = Staff & Document;
 
@@ -14,9 +15,30 @@ export class Staff {
     @Prop({ required: true })
     lastName: string;
 
-    // Link to User account for login
-    @Prop({ unique: true, sparse: true })
-    userId?: string;
+    // Auth fields added since User collection is removed
+    @Prop({ required: true })
+    password?: string; // Optional if existing data lacks it, but we can make it required. We use optional to avoid breaks during migration.
+
+    @Prop({ required: true, enum: UserRole, default: UserRole.STAFF })
+    role: UserRole;
+
+    @Prop({ default: true })
+    isActive: boolean;
+
+    @Prop({ default: null })
+    refreshToken?: string;
+
+    @Prop()
+    lastLogin?: Date;
+
+    @Prop({ type: Object, default: null })
+    pushSubscription?: any;
+
+    @Prop({ default: null })
+    resetPasswordToken?: string;
+
+    @Prop({ default: null })
+    resetPasswordExpires?: Date;
 
     @Prop({ required: true, unique: true })
     email: string;

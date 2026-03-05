@@ -4,6 +4,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { TimetableService } from './timetable.service';
 import { TimetableController } from './timetable.controller';
 import { Timetable, TimetableSchema } from './entities/timetable.entity';
+import { SwapRequest, SwapRequestSchema } from './entities/swap-request.entity';
 import { StaffModule } from '../staff/staff.module';
 import { StudentModule } from '../student/student.module';
 
@@ -11,6 +12,7 @@ import { StudentModule } from '../student/student.module';
   imports: [
     MongooseModule.forFeature([
       { name: Timetable.name, schema: TimetableSchema },
+      { name: SwapRequest.name, schema: SwapRequestSchema },
     ]),
     MulterModule.register({
       dest: './uploads/timetable',

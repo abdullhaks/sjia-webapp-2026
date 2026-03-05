@@ -20,7 +20,7 @@ import { UpdateStaffDto } from './dto/update-staff.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRole } from '../../database/schemas/user.schema';
+import { UserRole } from '../../shared/enums/roles.enum';
 import { S3Service } from '../../shared/s3.service';
 
 @Controller('staff')
@@ -46,6 +46,10 @@ export class StaffController {
         @UploadedFile() file?: Express.Multer.File,
     ) {
         if (file) {
+            const oldProfile = await this.staffService.findByUserId(req.user.sub);
+            if (oldProfile && oldProfile.photoUrl && oldProfile.photoUrl !== 'undefined') {
+                await this.s3Service.deleteFile(oldProfile.photoUrl);
+            }
             const imageUrl = await this.s3Service.uploadFile(file, 'sjia/staff');
             updateStaffDto.photoUrl = imageUrl;
         }
@@ -87,6 +91,10 @@ export class StaffController {
         @UploadedFile() file?: Express.Multer.File
     ) {
         if (file) {
+            const oldProfile = await this.staffService.findOne(id);
+            if (oldProfile && oldProfile.photoUrl && oldProfile.photoUrl !== 'undefined') {
+                await this.s3Service.deleteFile(oldProfile.photoUrl);
+            }
             const imageUrl = await this.s3Service.uploadFile(file, 'sjia/staff');
             updateStaffDto.photoUrl = imageUrl;
         }

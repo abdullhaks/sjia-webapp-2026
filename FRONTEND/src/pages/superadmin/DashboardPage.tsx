@@ -66,7 +66,7 @@ const DashboardPage = () => {
     };
 
     // Display Stats (default to 0 if empty)
-    const displayStats = stats.length > 0 ? stats.map((stat) => ({
+    const displayStats = (stats && stats.length > 0) ? stats.map((stat) => ({
         ...stat,
         // Keep icon/gradient mapping logic if you want consistent UI for known keys,
         // but DO NOT fallback to dummy values.
@@ -105,10 +105,10 @@ const DashboardPage = () => {
             {/* Header */}
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">
                         Dashboard Overview
                     </h1>
-                    <p className="text-gray-500 mt-1">
+                    <p className="text-gray-500 dark:text-gray-400 mt-1">
                         Welcome back! Here's what's happening today.
                     </p>
                 </div>
@@ -146,9 +146,9 @@ const DashboardPage = () => {
                                 });
                             });
                         }}
-                        className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-all shadow-sm"
+                        className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-gray-200 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm"
                     >
-                        <FaFileAlt className="text-gray-500" />
+                        <FaFileAlt className="text-gray-500 dark:text-gray-400" />
                         <span className="hidden sm:inline">Generate Report</span>
                     </motion.button>
                     <motion.button
@@ -207,15 +207,15 @@ const DashboardPage = () => {
 
                         <div className="relative flex items-start justify-between">
                             <div className="flex-1">
-                                <p className="text-sm font-medium text-gray-600 mb-1">{stat.title}</p>
-                                <h3 className="text-3xl font-bold text-gray-800">
+                                <p className="text-sm font-medium text-gray-600 dark:text-gray-700 mb-1">{stat.title}</p>
+                                <h3 className="text-3xl font-bold text-gray-800 dark:text-gray-900">
                                     <CountUp end={stat.value} duration={2} separator="," />
                                     {stat.suffix || ''}
                                 </h3>
                                 <div className={`flex items-center gap-1 mt-2 text-sm ${stat.trend.isPositive ? 'text-green-600' : 'text-red-500'}`}>
                                     {stat.trend.isPositive ? <FaArrowUp className="text-xs" /> : <FaArrowDown className="text-xs" />}
                                     <span className="font-semibold">{stat.trend.value}%</span>
-                                    <span className="text-gray-500">vs last month</span>
+                                    <span className="text-gray-500 dark:text-gray-600">vs last month</span>
                                 </div>
                             </div>
                             <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.gradient} shadow-lg`}>
@@ -231,14 +231,14 @@ const DashboardPage = () => {
                 {/* Main Chart */}
                 <motion.div
                     whileHover={{ y: -2 }}
-                    className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300"
+                    className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-lg transition-all duration-300"
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-lg font-bold text-gray-800">Admission Trends</h3>
-                            <p className="text-sm text-gray-500">Monthly student enrollment data</p>
+                            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">Admission Trends</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Monthly student enrollment data</p>
                         </div>
-                        <select className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20">
+                        <select className="px-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20">
                             <option>Last 7 months</option>
                             <option>Last 12 months</option>
                         </select>
@@ -279,9 +279,9 @@ const DashboardPage = () => {
                 {/* Secondary Panel */}
                 <motion.div
                     whileHover={{ y: -2 }}
-                    className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300"
+                    className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-lg transition-all duration-300"
                 >
-                    <h3 className="text-lg font-bold text-gray-800 mb-4">Weekly Attendance</h3>
+                    <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Weekly Attendance</h3>
                     <div className="h-44 mb-6">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={weeklyAttendance}>
@@ -315,20 +315,20 @@ const DashboardPage = () => {
                             Recent Activity
                         </h4>
                         <div className="space-y-3">
-                            {recentActivities.map((activity, index) => (
+                            {(recentActivities || []).map((activity, index) => (
                                 <motion.div
                                     key={activity.id}
                                     initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.5 + index * 0.1 }}
-                                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
                                 >
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center text-xs font-bold text-primary-700">
+                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/40 dark:to-primary-800/40 flex items-center justify-center text-xs font-bold text-primary-700 dark:text-primary-400">
                                         {activity.user.charAt(0)}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm text-gray-700 truncate">
-                                            <span className="font-semibold text-gray-900">{activity.user}</span> {activity.action}
+                                        <p className="text-sm text-gray-700 dark:text-gray-300 truncate">
+                                            <span className="font-semibold text-gray-900 dark:text-gray-100">{activity.user}</span> {activity.action}
                                         </p>
                                         <p className="text-xs text-gray-400">{formatTimeAgo(activity.time)}</p>
                                     </div>

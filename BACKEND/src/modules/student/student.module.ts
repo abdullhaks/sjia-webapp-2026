@@ -5,13 +5,11 @@ import { StudentController } from './student.controller';
 import { StudentPublicController } from './student.public.controller';
 import { StudentRepository } from './student.repository';
 import { Student, StudentSchema } from './schemas/student.schema';
-import { UsersModule } from '../users/users.module';
 import { SharedModule } from '../../shared/shared.module';
 
 @Module({
     imports: [
         MongooseModule.forFeature([{ name: Student.name, schema: StudentSchema }]),
-        UsersModule,
         SharedModule,
     ],
     controllers: [StudentController, StudentPublicController],

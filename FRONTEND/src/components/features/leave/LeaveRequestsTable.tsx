@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Table, Tag, Button, Tooltip, Space, Modal } from 'antd';
+import { Table, Tag, Button, Tooltip, Space, Modal, Input } from 'antd';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { useLeaveStore } from '../../../store/leaveStore';
 import { Leave } from '../../../services/api/leave.api';
@@ -19,14 +19,34 @@ const LeaveRequestsTable: React.FC = () => {
         }
     }, [error]);
 
-    const handleAction = (id: string, action: 'Approved' | 'Rejected') => {
+    const [rejectModal, setRejectModal] = React.useState<{ open: boolean; id: string | null }>({ open: false, id: null });
+    const [rejectionReason, setRejectionReason] = React.useState('');
+
+    const handleApprove = (id: string) => {
         Modal.confirm({
-            title: `Are you sure you want to ${action} this request?`,
+            title: `Approve Leave Request`,
+            content: 'Are you sure you want to approve this leave request?',
             onOk: async () => {
-                await updateLeaveStatus(id, action);
-                message.success(`Leave request ${action.toLowerCase()} successfully`);
+                await updateLeaveStatus(id, 'Approved');
+                message.success(`Leave request approved successfully`);
             }
         });
+    };
+
+    const handleRejectClick = (id: string) => {
+        setRejectModal({ open: true, id });
+        setRejectionReason('');
+    };
+
+    const confirmReject = async () => {
+        if (!rejectModal.id) return;
+        if (!rejectionReason.trim()) {
+            message.error('Please provide a rejection reason');
+            return;
+        }
+        await updateLeaveStatus(rejectModal.id, 'Rejected', rejectionReason);
+        message.success('Leave request rejected');
+        setRejectModal({ open: false, id: null });
     };
 
     const columns = [
@@ -86,7 +106,7 @@ const LeaveRequestsTable: React.FC = () => {
                                     shape="circle"
                                     className="text-green-600 hover:text-green-700 hover:bg-green-50"
                                     icon={<CheckOutlined />}
-                                    onClick={() => handleAction(record._id, 'Approved')}
+                                    onClick={() => handleApprove(record._id)}
                                 />
                             </Tooltip>
                             <Tooltip title="Reject">
@@ -95,7 +115,7 @@ const LeaveRequestsTable: React.FC = () => {
                                     shape="circle"
                                     className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                     icon={<CloseOutlined />}
-                                    onClick={() => handleAction(record._id, 'Rejected')}
+                                    onClick={() => handleRejectClick(record._id)}
                                 />
                             </Tooltip>
                         </>
@@ -110,13 +130,33 @@ const LeaveRequestsTable: React.FC = () => {
     }
 
     return (
-        <Table
-            columns={columns}
-            dataSource={leaves}
-            rowKey="_id"
-            pagination={{ pageSize: 10 }}
-            className="glass-table"
-        />
+        <>
+            <Table
+                columns={columns}
+                dataSource={leaves}
+                rowKey="_id"
+                pagination={{ pageSize: 10 }}
+                className="glass-table"
+            />
+            <Modal
+                title="Reject Leave Request"
+                open={rejectModal.open}
+                onOk={confirmReject}
+                onCancel={() => setRejectModal({ open: false, id: null })}
+                okText="Yes, Reject"
+                okButtonProps={{ danger: true }}
+            >
+                <div>
+                    <p className="mb-2">Please provide a reason for rejecting this leave request:</p>
+                    <Input.TextArea
+                        rows={4}
+                        placeholder="Rejection reason..."
+                        value={rejectionReason}
+                        onChange={(e) => setRejectionReason(e.target.value)}
+                    />
+                </div>
+            </Modal>
+        </>
     );
 };
 

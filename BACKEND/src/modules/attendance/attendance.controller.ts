@@ -4,7 +4,7 @@ import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRole } from '../../database/schemas/user.schema';
+import { UserRole } from '../../shared/enums/roles.enum';
 
 @Controller('attendance')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -15,6 +15,12 @@ export class AttendanceController {
     @Roles(UserRole.STAFF, UserRole.SUPERADMIN)
     markAttendance(@Body() createAttendanceDto: CreateAttendanceDto, @Request() req: any) {
         return this.attendanceService.markAttendance(createAttendanceDto, req.user.userId);
+    }
+
+    @Post('bulk')
+    @Roles(UserRole.STAFF, UserRole.SUPERADMIN)
+    markBulkAttendance(@Body() records: CreateAttendanceDto[], @Request() req: any) {
+        return this.attendanceService.bulkMarkAttendance(records, req.user.sub || req.user.userId);
     }
 
     @Get('student/:id')

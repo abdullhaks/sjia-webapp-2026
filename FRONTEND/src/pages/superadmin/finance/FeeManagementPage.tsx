@@ -46,7 +46,7 @@ const FeeManagementPage: React.FC = () => {
         }
     ];
 
-    if (loading && fees.length === 0) return <LoadingSpinner />;
+    if (loading && (!fees || fees.length === 0)) return <LoadingSpinner />;
 
     return (
         <div className="space-y-6">

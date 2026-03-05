@@ -17,9 +17,9 @@ const Card: React.FC<CardProps> = ({
     onClick,
 }) => {
     const variants = {
-        glass: 'glass shadow-glass',
-        white: 'bg-white shadow-md',
-        primary: 'glass-primary shadow-glass',
+        glass: 'glass dark:glass-dark shadow-glass',
+        white: 'bg-white dark:bg-slate-800 shadow-md',
+        primary: 'glass-primary dark:glass-dark shadow-glass',
     };
 
     const hoverClass = hover ? 'card-interactive' : '';

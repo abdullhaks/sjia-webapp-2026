@@ -7,7 +7,7 @@
 
 /* =================================================
    Custom Theme Configuration (Tailwind v4)
-   This extends Tailwind's default theme
+   Emerald/Teal color theme matching SJIA old project
    ================================================= */
 @theme {
     /* Font Families */
@@ -15,24 +15,26 @@
     --font-arabic: 'Amiri', 'Scheherazade', serif;
     --font-display: 'Poppins', sans-serif;
 
-    /* Colors - Primary (Purple) */
-    --color-primary-50: #F4ECF7;
-    --color-primary-100: #E8D4EF;
-    --color-primary-200: #D1A9DF;
-    --color-primary-300: #BB8FCE;
-    --color-primary-400: #A569BD;
-    --color-primary-500: #9B59B6;
-    --color-primary-600: #8E44AD;
-    --color-primary-700: #7D3C98;
-    --color-primary-800: #6C3483;
-    --color-primary-900: #5B2C6F;
-    --color-primary: #9B59B6;
-    --color-primary-dark: #8E44AD;
-    --color-primary-light: #BB8FCE;
+    /* Colors - Primary (Emerald) */
+    --color-primary-50: #ecfdf5;
+    --color-primary-100: #d1fae5;
+    --color-primary-200: #a7f3d0;
+    --color-primary-300: #6ee7b7;
+    --color-primary-400: #34d399;
+    --color-primary-500: #10b981;
+    --color-primary-600: #059669;
+    --color-primary-700: #047857;
+    --color-primary-800: #065f46;
+    --color-primary-900: #064e3b;
+    --color-primary: #059669;
+    --color-primary-dark: #047857;
+    --color-primary-light: #34d399;
 
-    /* Colors - Secondary */
-    --color-secondary: #FAFAFA;
-    --color-secondary-dark: #F5F5F5;
+    /* Colors - Secondary (Teal) */
+    --color-secondary: #f0fdfa;
+    --color-secondary-dark: #ccfbf1;
+    --color-secondary-500: #14b8a6;
+    --color-secondary-600: #0d9488;
 
     /* Colors - Accent (Gold/Orange) */
     --color-accent: #F39C12;
@@ -40,14 +42,14 @@
     --color-accent-dark: #E67E22;
 
     /* Colors - Semantic */
-    --color-success: #27AE60;
+    --color-success: #10b981;
     --color-warning: #F39C12;
-    --color-error: #E74C3C;
-    --color-info: #3498DB;
+    --color-error: #EF4444;
+    --color-info: #0ea5e9;
 
     /* Colors - Dark Theme */
-    --color-dark-bg: #1A1A2E;
-    --color-dark-surface: #16213E;
+    --color-dark-bg: #0f172a;
+    --color-dark-surface: #1e293b;
     --color-dark-text: #E8E8E8;
 
     /* Animation durations */
@@ -135,11 +137,14 @@
 }
 
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* =================================================
    Base Styles
    ================================================= */
 html {
     scroll-behavior: smooth;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
@@ -150,6 +155,16 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     width: 100%;
+    background-color: #f8fafc;
+    /* Slate 50 */
+    color: #0f172a;
+    /* Slate 900 */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+    background-color: var(--color-dark-bg);
+    color: var(--color-dark-text);
 }
 
 #root {
@@ -206,14 +221,14 @@ body {
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(155, 89, 182, 0.1);
+    border: 1px solid rgba(5, 150, 105, 0.1);
 }
 
 .glass-primary {
-    background: rgba(155, 89, 182, 0.15);
+    background: rgba(5, 150, 105, 0.15);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(155, 89, 182, 0.3);
+    border: 1px solid rgba(5, 150, 105, 0.3);
 }
 
 .glass-premium {
@@ -221,14 +236,14 @@ body {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 8px 32px 0 rgba(155, 89, 182, 0.25), inset 0 0 20px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px 0 rgba(5, 150, 105, 0.25), inset 0 0 20px rgba(255, 255, 255, 0.05);
 }
 
 /* =================================================
    Background Gradients
    ================================================= */
 .bg-gradient-primary {
-    background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 50%, #14b8a6 100%);
 }
 
 .bg-gradient-accent {
@@ -236,11 +251,11 @@ body {
 }
 
 .bg-gradient-hero {
-    background: linear-gradient(135deg, #8E44AD 0%, #5B2C6F 50%, #1A1A2E 100%);
+    background: linear-gradient(135deg, rgba(6, 78, 59, 0.85) 0%, rgba(5, 46, 22, 0.9) 100%);
 }
 
 .gradient-primary {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #5B2C6F 50%, #8E44AD 75%, #9B59B6 100%);
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 25%, #047857 50%, #059669 75%, #10b981 100%);
     background-size: 400% 400%;
     animation: gradientShift 15s ease infinite;
 }
@@ -250,12 +265,12 @@ body {
    ================================================= */
 .pattern-islamic {
     background-image:
-        repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(155, 89, 182, 0.03) 35px, rgba(155, 89, 182, 0.03) 70px),
-        repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(155, 89, 182, 0.03) 35px, rgba(155, 89, 182, 0.03) 70px);
+        repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(5, 150, 105, 0.03) 35px, rgba(5, 150, 105, 0.03) 70px),
+        repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(5, 150, 105, 0.03) 35px, rgba(5, 150, 105, 0.03) 70px);
 }
 
 .pattern-dots {
-    background-image: radial-gradient(circle, rgba(155, 89, 182, 0.1) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(5, 150, 105, 0.1) 1px, transparent 1px);
     background-size: 20px 20px;
 }
 
@@ -263,7 +278,7 @@ body {
    Text Gradients
    ================================================= */
 .text-gradient-primary {
-    background: linear-gradient(to right, #7D3C98, #6C3483);
+    background: linear-gradient(to right, #059669, #14b8a6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -280,18 +295,18 @@ body {
    Button Styles
    ================================================= */
 .btn-primary {
-    background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     font-weight: 600;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
 }
 
 .btn-accent {
@@ -345,7 +360,7 @@ body {
 }
 
 /* =================================================
-   Premium Input Styles
+   Premium Input Styles (Admin Panels)
    ================================================= */
 .input-premium {
     width: 100%;
@@ -367,8 +382,8 @@ body {
 .input-premium:focus {
     outline: none;
     background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(155, 89, 182, 0.5);
-    box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.1);
+    border-color: rgba(5, 150, 105, 0.5);
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
 }
 
 .input-premium:hover {
@@ -376,11 +391,11 @@ body {
 }
 
 /* =================================================
-   Premium Button Styles
+   Premium Button Styles (Admin Panels)
    ================================================= */
 .btn-premium {
     padding: 0.875rem 1.75rem;
-    background: linear-gradient(135deg, #F39C12 0%, #E67E22 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     border: none;
     border-radius: 0.75rem;
     color: white;
@@ -388,7 +403,7 @@ body {
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+    box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
     position: relative;
     overflow: hidden;
 }
@@ -410,7 +425,7 @@ body {
 
 .btn-premium:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
 }
 
 .btn-premium:active {
@@ -421,6 +436,21 @@ body {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
+}
+
+/* =================================================
+   Premium Card (Admin Panels)
+   ================================================= */
+.card-premium {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+}
+
+.card-premium:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 /* =================================================
@@ -436,18 +466,14 @@ body {
 }
 
 /* =================================================
-   Floating Orbs - REMOVED
-   ================================================= */
-
-/* =================================================
    Icon Container
    ================================================= */
 .icon-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(155, 89, 182, 0.8) 0%, rgba(142, 68, 173, 0.8) 100%);
-    box-shadow: 0 8px 20px rgba(155, 89, 182, 0.3);
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.8) 0%, rgba(20, 184, 166, 0.8) 100%);
+    box-shadow: 0 8px 20px rgba(5, 150, 105, 0.3);
 }
 
 
@@ -496,4 +522,28 @@ body {
     .container-custom {
         padding: 0 2rem;
     }
+}
+
+/* =================================================
+   Public-facing input fields
+   ================================================= */
+.input-field {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.75rem;
+    color: #1f2937;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.input-field::placeholder {
+    color: #9ca3af;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
 }

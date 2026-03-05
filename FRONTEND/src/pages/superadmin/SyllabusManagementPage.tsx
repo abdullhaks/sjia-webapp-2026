@@ -37,7 +37,7 @@ const SyllabusManagementPage = () => {
     }, [error]);
 
     const handleUpload = async () => {
-        if (uploadFileList.length === 0) return message.error('Please select a PDF file');
+        if (!uploadFileList || uploadFileList.length === 0) return message.error('Please select a PDF file');
         if (!form.subject || !form.class) return message.error('Subject and Class are required');
 
         try {
@@ -126,7 +126,7 @@ const SyllabusManagementPage = () => {
                 </select>
             </div>
 
-            {loading ? <LoadingSpinner /> : filteredSyllabi.length === 0 ? (
+            {loading ? <LoadingSpinner /> : (!filteredSyllabi || filteredSyllabi.length === 0) ? (
                 <EmptyState title="No Syllabi Found" description="Upload a syllabus to get started." />
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -165,7 +165,7 @@ const SyllabusManagementPage = () => {
                                         {(item.fileSize / 1024 / 1024).toFixed(2)} MB • {new Date(item.createdAt).toLocaleDateString()}
                                     </span>
                                     <a
-                                        href={item.fileUrl}
+                                        href={item.fileUrl.startsWith('http') ? item.fileUrl : `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000'}${item.fileUrl.startsWith('/') ? '' : '/'}${item.fileUrl}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-blue-400 hover:text-blue-300 flex items-center space-x-1 text-sm font-medium"

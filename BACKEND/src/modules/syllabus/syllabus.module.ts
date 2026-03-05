@@ -1,18 +1,16 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { MulterModule } from '@nestjs/platform-express';
 import { SyllabusService } from './syllabus.service';
 import { SyllabusController } from './syllabus.controller';
 import { Syllabus, SyllabusSchema } from './entities/syllabus.entity';
+import { SharedModule } from '../../shared/shared.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Syllabus.name, schema: SyllabusSchema },
     ]),
-    MulterModule.register({
-      dest: './uploads/syllabus',
-    }),
+    SharedModule,
   ],
   controllers: [SyllabusController],
   providers: [SyllabusService],

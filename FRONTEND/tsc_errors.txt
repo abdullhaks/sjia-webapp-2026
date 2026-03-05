@@ -1,0 +1,17 @@
+﻿src/App.tsx(68,11): error TS6133: 'isServerLoading' is declared but its value is never read.
+src/pages/auth/LoginPage.tsx(7,10): error TS2305: Module '"../../validations/authSchemas"' has no exported member 'loginSchema'.
+src/pages/auth/LoginPage.tsx(7,23): error TS2305: Module '"../../validations/authSchemas"' has no exported member 'LoginFormData'.
+src/pages/auth/LoginPage.tsx(29,17): error TS2353: Object literal may only specify known properties, and 'email' does not exist in type 'LoginCredentials'.
+src/pages/staff/StaffClassesPage.tsx(4,63): error TS6133: 'Divider' is declared but its value is never read.
+src/pages/staff/StaffLeavePage.tsx(20,19): error TS2339: Property '_id' does not exist on type 'User'.
+src/pages/staff/StaffLeavePage.tsx(21,37): error TS2339: Property '_id' does not exist on type 'User'.
+src/pages/student/StudentDashboardPage.tsx(271,37): error TS2322: Type '(value: number) => [string, "Attendance"]' is not assignable to type 'Formatter<number, "Attendance"> & ((value: number, name: "Attendance", item: Payload<number, "Attendance">, index: number, payload: Payload<number, "Attendance">[]) => ReactNode | [...])'.
+  Type '(value: number) => [string, "Attendance"]' is not assignable to type 'Formatter<number, "Attendance">'.
+    Types of parameters 'value' and 'value' are incompatible.
+      Type 'number | undefined' is not assignable to type 'number'.
+        Type 'undefined' is not assignable to type 'number'.
+src/pages/student/StudentMediaPage.tsx(18,21): error TS2339: Property 'type' does not exist on type 'GalleryItem'.
+src/pages/student/StudentMediaPage.tsx(62,35): error TS2339: Property 'type' does not exist on type 'GalleryItem'.
+src/pages/student/StudentMediaPage.tsx(71,43): error TS2339: Property 'thumbnailUrl' does not exist on type 'GalleryItem'.
+src/pages/student/StudentMediaPage.tsx(71,64): error TS2339: Property 'url' does not exist on type 'GalleryItem'.
+src/pages/student/StudentMediaPage.tsx(82,39): error TS2339: Property 'type' does not exist on type 'GalleryItem'.

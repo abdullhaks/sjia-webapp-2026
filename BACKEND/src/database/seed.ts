@@ -1,16 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { getModelToken } from '@nestjs/mongoose';
-import { User, UserRole } from '../database/schemas/user.schema';
+import { SuperAdmin } from './schemas/superadmin.schema';
+import { UserRole } from '../shared/enums/roles.enum';
 import * as bcrypt from 'bcrypt';
 
 async function seed() {
     const app = await NestFactory.createApplicationContext(AppModule);
-    const userModel = app.get(getModelToken(User.name));
+    const superAdminModel = app.get(getModelToken(SuperAdmin.name));
 
     try {
         // Check if super admin already exists
-        const existingAdmin = await userModel.findOne({ email: 'admin@sjia.edu' });
+        const existingAdmin = await superAdminModel.findOne({ email: 'admin@sjia.edu' });
 
         if (existingAdmin) {
             console.log('✅ Super admin found.');
@@ -33,7 +34,7 @@ async function seed() {
         // Create super admin
         const hashedPassword = await bcrypt.hash('Admin@123', 10);
 
-        const superAdmin = await userModel.create({
+        const superAdmin = await superAdminModel.create({
             email: 'admin@sjia.edu',
             password: hashedPassword,
             role: UserRole.SUPERADMIN,

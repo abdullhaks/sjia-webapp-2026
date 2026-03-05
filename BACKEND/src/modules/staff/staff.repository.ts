@@ -33,7 +33,7 @@ export class StaffRepository {
     }
 
     async findByUserId(userId: string): Promise<Staff | null> {
-        return this.staffModel.findOne({ userId }).exec();
+        return this.staffModel.findById(userId).exec();
     }
 
     async update(id: string, updateStaffDto: UpdateStaffDto): Promise<Staff> {

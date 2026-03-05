@@ -85,12 +85,12 @@ const StaffDashboardPage: React.FC = () => {
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="glass-card p-6"
+                className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-6"
             >
-                <h1 className="text-3xl font-bold text-white mb-2">
+                <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
                     Welcome back, {currentStaff?.firstName || user?.firstName}! 👨‍🏫
                 </h1>
-                <p className="text-gray-300">
+                <p className="text-gray-500 dark:text-gray-400">
                     {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                 </p>
             </motion.div>
@@ -102,11 +102,11 @@ const StaffDashboardPage: React.FC = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.1 }}
-                    className="glass-card p-6 lg:col-span-2"
+                    className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 lg:col-span-2"
                 >
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                            <Clock className="w-5 h-5 text-blue-400" />
+                        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                            <Clock className="w-5 h-5 text-blue-500" />
                             Today's Schedule
                         </h2>
                     </div>
@@ -117,21 +117,21 @@ const StaffDashboardPage: React.FC = () => {
                                 displaySchedule.map((schedule) => (
                                     <div
                                         key={schedule.id}
-                                        className={`p-4 rounded-lg border transition-all ${schedule.status === 'current'
-                                            ? 'bg-blue-500/10 border-blue-500/30'
-                                            : 'bg-white/5 border-white/10 hover:bg-white/10'
+                                        className={`p-4 rounded-xl border transition-all ${schedule.status === 'current'
+                                            ? 'bg-blue-50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-900/30'
+                                            : 'bg-gray-50 dark:bg-slate-800/50 border-gray-200 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-800'
                                             }`}
                                     >
                                         <div className="flex items-center justify-between gap-4">
                                             <div className="flex items-center gap-4 flex-1">
                                                 <div className="text-center">
-                                                    <div className="text-2xl font-bold text-white">{schedule.period}</div>
-                                                    <div className="text-xs text-gray-400">Period</div>
+                                                    <div className="text-2xl font-bold text-gray-800 dark:text-gray-200">{schedule.period}</div>
+                                                    <div className="text-xs text-gray-500 dark:text-gray-400">Period</div>
                                                 </div>
                                                 <div className="flex-1">
-                                                    <h3 className="text-white font-semibold">{schedule.subject}</h3>
-                                                    <p className="text-sm text-gray-400">{schedule.class} • Room {schedule.room}</p>
-                                                    <p className="text-xs text-gray-500">{schedule.time}</p>
+                                                    <h3 className="text-gray-800 dark:text-gray-100 font-semibold">{schedule.subject}</h3>
+                                                    <p className="text-sm text-gray-500 dark:text-gray-400">{schedule.class} • Room {schedule.room}</p>
+                                                    <p className="text-xs text-gray-400 dark:text-gray-500">{schedule.time}</p>
                                                 </div>
                                             </div>
                                             <span className={`text-xs px-3 py-1 rounded-full border ${getStatusColor(schedule.status)} capitalize`}>
@@ -152,14 +152,14 @@ const StaffDashboardPage: React.FC = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.2 }}
-                    className="glass-card p-6"
+                    className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-6"
                 >
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                            <AlertCircle className="w-5 h-5 text-yellow-400" />
+                        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                            <AlertCircle className="w-5 h-5 text-yellow-500" />
                             Pending Leaves
                         </h2>
-                        <span className="text-xs px-2 py-1 rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">
+                        <span className="text-xs px-2 py-1 rounded-full bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-500/30">
                             {pendingLeaves.length}
                         </span>
                     </div>
@@ -168,21 +168,21 @@ const StaffDashboardPage: React.FC = () => {
                         {pendingLeaves.map((leave) => (
                             <div
                                 key={leave.id}
-                                className="p-3 rounded-lg bg-white/5 border border-white/10"
+                                className="p-3 rounded-xl bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700"
                             >
                                 <div className="mb-2">
-                                    <h3 className="text-white font-medium text-sm">{leave.studentName}</h3>
-                                    <p className="text-xs text-gray-400">{leave.class}</p>
+                                    <h3 className="text-gray-800 dark:text-gray-200 font-medium text-sm">{leave.studentName}</h3>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">{leave.class}</p>
                                 </div>
                                 <div className="mb-2">
-                                    <p className="text-xs text-gray-300">{leave.dates}</p>
-                                    <p className="text-xs text-gray-400">Reason: {leave.reason}</p>
+                                    <p className="text-xs text-gray-600 dark:text-gray-300">{leave.dates}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">Reason: {leave.reason}</p>
                                 </div>
                                 <div className="flex gap-2">
-                                    <button className="flex-1 px-3 py-1.5 rounded-lg bg-green-500/20 hover:bg-green-500/30 text-green-300 text-xs font-medium transition-all border border-green-500/30">
+                                    <button className="flex-1 px-3 py-1.5 rounded-lg bg-green-50 dark:bg-green-500/20 hover:bg-green-100 dark:hover:bg-green-500/30 text-green-700 dark:text-green-300 text-xs font-medium transition-all border border-green-200 dark:border-green-500/30">
                                         Approve
                                     </button>
-                                    <button className="flex-1 px-3 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 text-xs font-medium transition-all border border-red-500/30">
+                                    <button className="flex-1 px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-500/20 hover:bg-red-100 dark:hover:bg-red-500/30 text-red-700 dark:text-red-300 text-xs font-medium transition-all border border-red-200 dark:border-red-500/30">
                                         Reject
                                     </button>
                                 </div>
@@ -201,11 +201,11 @@ const StaffDashboardPage: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="glass-card p-6"
+                className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-6"
             >
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                        <Users className="w-5 h-5 text-purple-400" />
+                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                        <Users className="w-5 h-5 text-purple-500" />
                         My Classes
                     </h2>
                 </div>
@@ -214,22 +214,22 @@ const StaffDashboardPage: React.FC = () => {
                     {myClasses.map((classItem) => (
                         <div
                             key={classItem.id}
-                            className="p-4 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-all cursor-pointer group"
+                            className="p-4 rounded-xl bg-gray-50 dark:bg-slate-800/50 hover:bg-gray-100 dark:hover:bg-slate-800/80 border border-gray-200 dark:border-slate-700 transition-all cursor-pointer group"
                         >
                             <div className="flex items-start justify-between mb-3">
                                 <div>
-                                    <h3 className="text-white font-semibold">{classItem.name}</h3>
-                                    <p className="text-sm text-gray-400">{classItem.subject}</p>
+                                    <h3 className="text-gray-800 dark:text-gray-200 font-semibold">{classItem.name}</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">{classItem.subject}</p>
                                 </div>
-                                <span className="text-xs px-2 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                                <span className="text-xs px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/30">
                                     {classItem.program}
                                 </span>
                             </div>
                             <div className="flex items-center gap-2 mb-3">
-                                <Users className="w-4 h-4 text-gray-400" />
-                                <span className="text-sm text-gray-300">{classItem.students === 'N/A' ? 'Active' : `${classItem.students} Students`}</span>
+                                <Users className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                                <span className="text-sm text-gray-600 dark:text-gray-400">{classItem.students === 'N/A' ? 'Active' : `${classItem.students} Students`}</span>
                             </div>
-                            <button className="w-full px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 text-white text-sm font-medium transition-all border border-white/10 group-hover:border-white/20">
+                            <button className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 text-primary dark:text-primary-400 shadow-sm text-sm font-medium transition-all border border-gray-200 dark:border-slate-600 group-hover:border-primary/50">
                                 Mark Attendance
                             </button>
                         </div>
@@ -242,21 +242,21 @@ const StaffDashboardPage: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="glass-card p-6"
+                className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-6"
             >
-                <h2 className="text-xl font-semibold text-white mb-4">Quick Actions</h2>
+                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Quick Actions</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {quickActions.map((action, index) => (
                         <motion.button
                             key={index}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="p-6 rounded-xl bg-gradient-to-br from-white/10 to-white/5 hover:from-white/20 hover:to-white/10 border border-white/10 transition-all group"
+                            className="p-6 rounded-xl bg-gray-50 dark:bg-slate-800/50 hover:bg-gray-100 dark:hover:bg-slate-800 border border-gray-200 dark:border-slate-700 transition-all group"
                         >
-                            <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform`}>
+                            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center mb-3 mx-auto shadow-sm group-hover:scale-110 transition-transform`}>
                                 <action.icon className="w-6 h-6 text-white" />
                             </div>
-                            <p className="text-white font-medium text-sm">{action.label}</p>
+                            <p className="text-gray-800 dark:text-gray-200 font-medium text-sm">{action.label}</p>
                         </motion.button>
                     ))}
                 </div>

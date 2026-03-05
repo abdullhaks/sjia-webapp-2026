@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaGraduationCap, FaBook, FaUsers } from 'react-icons/fa';
-import Button from '../../common/Button';
+import { FiMonitor, FiUsers, FiBookOpen } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 import { useCMSStore } from '../../../store/cmsStore';
 import LoadingSpinner from '../../common/LoadingSpinner';
 
 const HeroSection: React.FC = () => {
     const { siteContent, fetchSiteContent, loading } = useCMSStore();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchSiteContent();
@@ -17,189 +18,159 @@ const HeroSection: React.FC = () => {
         return content ? content.value : fallback;
     };
 
-
-
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
             transition: {
-                staggerChildren: 0.2,
-                delayChildren: 0.3,
+                staggerChildren: 0.15,
+                delayChildren: 0.2,
             },
         },
     };
 
     const itemVariants = {
-        hidden: { opacity: 0, y: 30 },
+        hidden: { opacity: 0, scale: 0.95, y: 30 },
         visible: {
             opacity: 1,
+            scale: 1,
             y: 0,
-            transition: { duration: 0.6, ease: 'easeOut' },
+            transition: { duration: 0.8, ease: [0.25, 0.8, 0.25, 1] },
         },
     };
 
     if (loading && siteContent.length === 0) {
-        return <div className="h-screen flex items-center justify-center bg-gradient-hero"><LoadingSpinner size="lg" color="white" /></div>;
+        return <div className="h-screen flex items-center justify-center bg-gray-900"><LoadingSpinner size="lg" color="white" /></div>;
     }
+
+    const portals = [
+        {
+            title: "Super Admin",
+            desc: "System Management",
+            icon: <FiMonitor />,
+            path: "/superadmin-login",
+            gradient: "from-indigo-600 to-indigo-900",
+            hoverOverlay: "group-hover:bg-indigo-600/20",
+            textColor: "text-indigo-300"
+        },
+        {
+            title: "Staff Portal",
+            desc: "Educator Access",
+            icon: <FiUsers />,
+            path: "/staff-login",
+            gradient: "from-teal-600 to-teal-900",
+            hoverOverlay: "group-hover:bg-teal-600/20",
+            textColor: "text-teal-300"
+        },
+        {
+            title: "Student Portal",
+            desc: "Learning Dashboard",
+            icon: <FiBookOpen />,
+            path: "/student-login",
+            gradient: "from-emerald-600 to-emerald-900",
+            hoverOverlay: "group-hover:bg-emerald-600/20",
+            textColor: "text-emerald-300"
+        }
+    ];
 
     return (
         <section
             id="home"
-            className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero"
+            className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gray-950 pt-20 pb-32"
         >
-            {/* Animated Background Pattern */}
-            <div className="absolute inset-0 pattern-islamic opacity-30"></div>
+            {/* Immersive Background */}
+            <div className="absolute inset-0">
+                {getContent('hero-background-image', '') && (
+                    <div
+                        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30 mix-blend-luminosity"
+                        style={{ backgroundImage: `url(${getContent('hero-background-image', '')})` }}
+                    />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-b from-gray-900/80 via-gray-950/90 to-gray-950 z-10" />
 
-            {/* Floating Orbs */}
-            <motion.div
-                animate={{
-                    y: [0, -20, 0],
-                    opacity: [0.3, 0.6, 0.3],
-                }}
-                transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                }}
-                className="absolute top-20 left-10 w-64 h-64 bg-accent rounded-full blur-3xl"
-            />
-            <motion.div
-                animate={{
-                    y: [0, 20, 0],
-                    opacity: [0.2, 0.5, 0.2],
-                }}
-                transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                }}
-                className="absolute bottom-20 right-10 w-96 h-96 bg-primary-400 rounded-full blur-3xl"
-            />
+                {/* Dynamic Lighting Orbs */}
+                <motion.div
+                    animate={{ x: [-50, 50, -50], y: [-50, 50, -50], opacity: [0.3, 0.5, 0.3] }}
+                    transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+                    className="absolute top-1/4 left-1/4 w-[40rem] h-[40rem] bg-indigo-500/10 rounded-full blur-[100px] z-10"
+                />
+                <motion.div
+                    animate={{ x: [50, -50, 50], y: [50, -50, 50], opacity: [0.3, 0.5, 0.3] }}
+                    transition={{ duration: 15, repeat: Infinity, ease: 'linear', delay: 2 }}
+                    className="absolute bottom-1/4 right-1/4 w-[40rem] h-[40rem] bg-emerald-500/10 rounded-full blur-[100px] z-10"
+                />
+            </div>
 
-            {/* Content */}
-            <div className="relative z-10 container-custom text-center text-white pt-20">
+            {/* Main Content */}
+            <div className="relative z-20 container mx-auto px-4 w-full text-center">
                 <motion.div
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
-                    className="max-w-5xl mx-auto"
+                    className="max-w-6xl mx-auto"
                 >
-                    {/* Islamic Greeting */}
-                    <motion.div variants={itemVariants} className="mb-6 mt-32">
-                        <p className="text-accent text-xl md:text-2xl font-arabic mb-2">
-                            {getContent('hero-greeting-arabic', 'السلام عليكم ورحمة الله وبركاته')}
-                        </p>
-                        <p className="text-gray-200 text-sm md:text-base">
-                            {getContent('hero-greeting-english', 'Peace be upon you and the mercy of Allah and His blessings')}
-                        </p>
-                    </motion.div>
+                    {/* Welcome Header */}
+                    <motion.div variants={itemVariants} className="mb-8">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6 shadow-xl w-auto">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                            <span className="text-white/80 text-sm font-medium tracking-wide uppercase">Admissions Open 2026</span>
+                        </div>
 
-                    {/* Quranic Verse */}
-                    <motion.div
-                        variants={itemVariants}
-                        className="glass-dark rounded-2xl p-6 md:p-8 mb-8 max-w-3xl mx-auto"
-                    >
-                        <p className="text-2xl md:text-3xl font-arabic mb-3 leading-relaxed">
-                            {getContent('hero-verse-arabic', 'قُلْ هَلْ يَسْتَوِي الَّذِينَ يَعْلَمُونَ وَالَّذِينَ لَا يَعْلَمُونَ')}
-                        </p>
-                        <p className="text-gray-300 text-sm md:text-base italic">
-                            "{getContent('hero-verse-english', 'Say: Are those who know equal to those who do not know?')}"
-                        </p>
-                        <p className="text-accent text-xs md:text-sm mt-2">
-                            - {getContent('hero-verse-ref', 'Quran 39:9')}
-                        </p>
-                    </motion.div>
-
-                    {/* College Name */}
-                    <motion.div variants={itemVariants}>
-                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 font-display">
-                            {getContent('college-name-main', 'Sheikh Jeelani')}
-                            <span className="block text-accent mt-2">{getContent('college-name-sub', 'Islamic Academy')}</span>
+                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-tighter mb-4 leading-tight">
+                            Sheikh Jeelani
+                            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-indigo-400 mt-2">
+                                Islamic Academy
+                            </span>
                         </h1>
-                        <div className="inline-flex items-center glass-dark px-6 py-2 rounded-full mb-6">
-                            <span className="text-accent font-semibold">★</span>
-                            <span className="mx-2 text-gray-300">Established</span>
-                            <span className="text-accent font-bold">{getContent('college-established-year', '2002')}</span>
+                        <p className="text-xl md:text-2xl text-gray-400 font-light max-w-3xl mx-auto leading-relaxed">
+                            {getContent('hero-tagline', 'Excellence in Islamic Education Since 2002. Cultivating wisdom, faith, and modern knowledge for a brighter tomorrow.')}
+                        </p>
+                    </motion.div>
+
+                    {/* Portal Selection Grid - This directly answers the prompt */}
+                    <motion.div variants={itemVariants} className="mt-20">
+                        <h2 className="text-white/60 text-sm font-bold tracking-[0.2em] uppercase mb-8">Access Your Portal</h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                            {portals.map((portal, idx) => (
+                                <motion.div
+                                    key={idx}
+                                    whileHover={{ y: -8, scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={() => navigate(portal.path)}
+                                    className="group relative cursor-pointer rounded-3xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl transition-all duration-300"
+                                >
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${portal.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                                    <div className="p-8 md:p-10 relative z-10 flex flex-col items-center justify-center min-h-[240px]">
+                                        <div className={`w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center text-3xl mb-6 shadow-lg transform group-hover:scale-110 transition-transform duration-300 ${portal.textColor}`}>
+                                            {portal.icon}
+                                        </div>
+                                        <h3 className="text-2xl font-bold text-white mb-2">{portal.title}</h3>
+                                        <p className="text-gray-400 text-sm">{portal.desc}</p>
+
+                                        <div className="mt-8 flex items-center justify-center gap-2 text-white/40 group-hover:text-white/90 transition-colors">
+                                            <span className="text-sm font-semibold tracking-wider">SECURE LOGIN</span>
+                                            <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
                         </div>
                     </motion.div>
-
-                    {/* Tagline */}
-                    <motion.p
-                        variants={itemVariants}
-                        className="text-lg md:text-xl text-gray-200 mb-12 max-w-3xl mx-auto leading-relaxed"
-                    >
-                        {getContent('hero-tagline', 'Empowering minds with Islamic values and modern education, preparing students for success in this world and the hereafter.')}
-                    </motion.p>
-
-                    {/* CTA Buttons */}
-                    <motion.div
-                        variants={itemVariants}
-                        className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
-                    >
-                        <Button
-                            variant="accent"
-                            size="lg"
-                            icon={<FaGraduationCap />}
-                            onClick={() => {
-                                const contactSection = document.querySelector('#contact');
-                                contactSection?.scrollIntoView({ behavior: 'smooth' });
-                            }}
-                        >
-                            Apply Now
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="lg"
-                            icon={<FaBook />}
-                            onClick={() => {
-                                const programsSection = document.querySelector('#programs');
-                                programsSection?.scrollIntoView({ behavior: 'smooth' });
-                            }}
-                        >
-                            Explore Programs
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="lg"
-                            icon={<FaUsers />}
-                            onClick={() => {
-                                const campusSection = document.querySelector('#campus');
-                                campusSection?.scrollIntoView({ behavior: 'smooth' });
-                            }}
-                        >
-                            Virtual Tour
-                        </Button>
-                    </motion.div>
-
-                    {/* Stats */}
-                    <motion.div
-                        variants={itemVariants}
-                        className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto mb-20"
-                    >
-                        {[
-                            { number: getContent('stat-students', '500+'), label: 'Students' },
-                            { number: getContent('stat-faculty', '50+'), label: 'Faculty Members' },
-                            { number: getContent('stat-years', '20+'), label: 'Years of Excellence' },
-                        ].map((stat, index) => (
-                            <div
-                                key={index}
-                                className="glass-dark rounded-xl p-6 hover:scale-105 transition-transform duration-300"
-                            >
-                                <div className="text-3xl md:text-4xl font-bold text-accent mb-2">
-                                    {stat.number}
-                                </div>
-                                <div className="text-gray-300 text-sm md:text-base">
-                                    {stat.label}
-                                </div>
-                            </div>
-                        ))}
-                    </motion.div>
                 </motion.div>
-
-       
-        
             </div>
+
+            {/* Scroll Indicator */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 2, duration: 1 }}
+                className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center"
+            >
+                <div className="w-[1px] h-12 bg-gradient-to-b from-white/30 to-transparent" />
+            </motion.div>
         </section>
     );
 };

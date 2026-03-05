@@ -33,15 +33,15 @@ export class AdmissionRepository {
     }
 
     async updateStatus(id: string, updateDto: UpdateAdmissionStatusDto): Promise<Admission> {
+        const updateData: any = {
+            status: updateDto.status,
+        };
+        if (updateDto.notes !== undefined) updateData.notes = updateDto.notes;
+        if (updateDto.interviewDate !== undefined) updateData.interviewDate = updateDto.interviewDate;
+        if (updateDto.rejectionReason !== undefined) updateData.rejectionReason = updateDto.rejectionReason;
+
         const admission = await this.admissionModel
-            .findByIdAndUpdate(
-                id,
-                {
-                    status: updateDto.status,
-                    notes: updateDto.notes
-                },
-                { new: true }
-            )
+            .findByIdAndUpdate(id, updateData, { new: true })
             .exec();
 
         if (!admission) {

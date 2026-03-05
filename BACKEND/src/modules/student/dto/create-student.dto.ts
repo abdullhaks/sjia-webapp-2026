@@ -95,4 +95,15 @@ export class CreateStudentDto {
     @IsOptional()
     @IsString()
     councilPosition?: string;
+
+    @IsOptional()
+    @IsString()
+    password?: string;
+
+    @IsOptional()
+    @IsString()
+    passwordMode?: string;
+
+    @IsOptional()
+    sendEmail?: any; // FormData handles checked differently
 }

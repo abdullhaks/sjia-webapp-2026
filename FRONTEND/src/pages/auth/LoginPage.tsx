@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { message } from '../../components/common/AntdStaticProvider';
 import { motion } from 'framer-motion';
-import { loginSchema, LoginFormData } from '../../validations/authSchemas';
+import { superAdminLoginSchema, SuperAdminLoginFormData } from '../../validations/authSchemas';
 import { useAuthStore } from '../../store/authStore';
 import authService from '../../services/api/auth.api';
 import { FiMail, FiLock, FiLogIn } from 'react-icons/fi';
@@ -18,15 +18,15 @@ const LoginPage = () => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema),
+    } = useForm<SuperAdminLoginFormData>({
+        resolver: zodResolver(superAdminLoginSchema),
     });
 
-    const onSubmit = async (data: LoginFormData) => {
+    const onSubmit = async (data: SuperAdminLoginFormData) => {
         setIsLoading(true);
         try {
             const user = await authService.login({
-                email: data.email,
+                identifier: data.identifier,
                 password: data.password,
             });
 
@@ -100,7 +100,7 @@ const LoginPage = () => {
                         {/* Email Field */}
                         <div>
                             <label
-                                htmlFor="email"
+                                htmlFor="identifier"
                                 className="block text-sm font-medium text-white/70 mb-2"
                             >
                                 Email Address
@@ -108,17 +108,17 @@ const LoginPage = () => {
                             <div className="relative group">
                                 <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-purple-400 transition-colors" />
                                 <input
-                                    {...register('email')}
+                                    {...register('identifier')}
                                     type="email"
-                                    id="email"
+                                    id="identifier"
                                     className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent transition-all"
                                     placeholder="admin@sjia.edu"
                                 />
                             </div>
-                            {errors.email && (
+                            {errors.identifier && (
                                 <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
                                     <span className="w-1 h-1 bg-red-400 rounded-full" />
-                                    {errors.email.message}
+                                    {errors.identifier.message}
                                 </p>
                             )}
                         </div>
@@ -149,7 +149,7 @@ const LoginPage = () => {
                             )}
                         </div>
 
-                        {/* Remember Me & Forgot Password */}
+                        {/* Remember Me */}
                         <div className="flex items-center justify-between">
                             <label className="flex items-center cursor-pointer group">
                                 <input
@@ -161,12 +161,6 @@ const LoginPage = () => {
                                     Remember me
                                 </span>
                             </label>
-                            {/* <a
-                                href="#"
-                                className="text-sm text-purple-400 hover:text-purple-300 transition-colors"
-                            >
-                                Forgot password?
-                            </a> */}
                         </div>
 
                         {/* Submit Button */}

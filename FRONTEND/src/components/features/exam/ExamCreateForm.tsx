@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Modal, Form, Input, DatePicker, Select, Button, Space, TimePicker } from 'antd';
 import { message } from '../../../components/common/AntdStaticProvider';
 import { useExamStore } from '../../../store/examStore';
+import { useSettingsStore } from '../../../store/settingsStore';
+import { useEffect } from 'react';
 
 
 const { Option } = Select;
@@ -18,6 +20,13 @@ const ExamCreateForm: React.FC<ExamCreateFormProps> = ({ visible, onCancel, onSu
     const [loading, setLoading] = useState(false);
 
     const { createExam } = useExamStore();
+    const { getSettingValue, fetchSettings } = useSettingsStore();
+
+    useEffect(() => {
+        fetchSettings();
+    }, [fetchSettings]);
+
+    const availableClasses = getSettingValue<string[]>('academic-classes', ['SSLC', 'Plus Two - Science', 'Plus Two - Commerce', 'Degree']);
 
     const onFinish = async (values: any) => {
         setLoading(true);
@@ -31,6 +40,7 @@ const ExamCreateForm: React.FC<ExamCreateFormProps> = ({ visible, onCancel, onSu
                     ...s,
                     date: s.date.format('YYYY-MM-DD'),
                     startTime: s.startTime.format('HH:mm'),
+                    maxMarks: Number(s.maxMarks) || 100,
                 })) : []
             };
 
@@ -87,10 +97,9 @@ const ExamCreateForm: React.FC<ExamCreateFormProps> = ({ visible, onCancel, onSu
 
                 <Form.Item name="classes" label="Participating Classes" rules={[{ required: true }]}>
                     <Select mode="multiple" placeholder="Select Classes">
-                        <Option value="SSLC">SSLC</Option>
-                        <Option value="Plus Two - Science">Plus Two - Science</Option>
-                        <Option value="Plus Two - Commerce">Plus Two - Commerce</Option>
-                        <Option value="Degree">Degree</Option>
+                        {availableClasses.map(cls => (
+                            <Option key={cls} value={cls}>{cls}</Option>
+                        ))}
                     </Select>
                 </Form.Item>
 
@@ -131,6 +140,14 @@ const ExamCreateForm: React.FC<ExamCreateFormProps> = ({ visible, onCancel, onSu
                                             className="mb-0 w-24"
                                         >
                                             <Input placeholder="Duration" />
+                                        </Form.Item>
+                                        <Form.Item
+                                            {...restField}
+                                            name={[name, 'maxMarks']}
+                                            rules={[{ required: true, message: 'Missing marks' }]}
+                                            className="mb-0 w-24"
+                                        >
+                                            <Input type="number" placeholder="Max Marks" />
                                         </Form.Item>
                                         <Button danger onClick={() => remove(name)} className="text-red-500 hover:text-red-700">Remove</Button>
                                     </Space>

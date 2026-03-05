@@ -20,6 +20,7 @@ import { NoticeModule } from './modules/notice/notice.module';
 import { AttendanceModule } from './modules/attendance/attendance.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { FinanceModule } from './modules/finance/finance.module';
+import { SalaryModule } from './modules/salary/salary.module';
 import jwtConfig from './config/jwt.config';
 import databaseConfig from './config/database.config';
 
@@ -54,9 +55,9 @@ import { SharedModule } from './shared/shared.module';
     TimetableModule,
     NoticeModule,
     AttendanceModule,
-    AttendanceModule,
     DashboardModule,
     FinanceModule,
+    SalaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

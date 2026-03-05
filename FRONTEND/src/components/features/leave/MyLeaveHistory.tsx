@@ -1,28 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Table, Tag } from 'antd';
+import { useLeaveStore } from '../../../store/leaveStore';
+import LoadingSpinner from '../../common/LoadingSpinner';
 
 const MyLeaveHistory: React.FC = () => {
-    // Mock Data
-    const data = [
-        {
-            key: '1',
-            type: 'Sick Leave',
-            startDate: '2024-01-10',
-            endDate: '2024-01-12',
-            days: 3,
-            status: 'Approved',
-            reason: 'High Fever',
-        },
-        {
-            key: '2',
-            type: 'Casual Leave',
-            startDate: '2024-02-05',
-            endDate: '2024-02-05',
-            days: 1,
-            status: 'Pending',
-            reason: 'Personal work',
-        }
-    ];
+    const { leaves, loading, fetchMyLeaves } = useLeaveStore();
+
+    useEffect(() => {
+        fetchMyLeaves();
+    }, [fetchMyLeaves]);
+
+    const calculateDays = (start: string, end: string) => {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        return diffDays;
+    };
 
     const columns = [
         {
@@ -34,7 +28,10 @@ const MyLeaveHistory: React.FC = () => {
             title: 'Duration',
             key: 'duration',
             render: (_: any, record: any) => (
-                <span>{record.startDate} to {record.endDate} ({record.days} days)</span>
+                <span>
+                    {new Date(record.startDate).toLocaleDateString()} to {new Date(record.endDate).toLocaleDateString()}{' '}
+                    ({calculateDays(record.startDate, record.endDate)} days)
+                </span>
             )
         },
         {
@@ -46,20 +43,34 @@ const MyLeaveHistory: React.FC = () => {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
-            render: (status: string) => {
+            render: (status: string, record: any) => {
                 let color = 'default';
                 if (status === 'Approved') color = 'success';
                 if (status === 'Rejected') color = 'error';
                 if (status === 'Pending') color = 'processing';
-                return <Tag color={color}>{status}</Tag>;
+                return (
+                    <div className="flex flex-col gap-1">
+                        <Tag color={color} className="w-fit">{status}</Tag>
+                        {status === 'Rejected' && record.rejectionReason && (
+                            <span className="text-xs text-red-500 block truncate max-w-xs" title={record.rejectionReason}>
+                                {record.rejectionReason}
+                            </span>
+                        )}
+                    </div>
+                );
             }
         },
     ];
 
+    if (loading && leaves.length === 0) {
+        return <LoadingSpinner />;
+    }
+
     return (
         <Table
             columns={columns}
-            dataSource={data}
+            dataSource={leaves}
+            rowKey="_id"
             pagination={{ pageSize: 5 }}
             className="glass-table"
         />

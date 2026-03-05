@@ -7,6 +7,15 @@ export interface Exam {
     startDate: string;
     endDate: string;
     status: string;
+    classes: string[];
+    schedule: {
+        subjectName: string;
+        date: string;
+        startTime: string;
+        duration: string;
+        maxMarks?: number;
+    }[];
+    description?: string;
 }
 
 export interface StudentExam extends Exam {
@@ -27,6 +36,11 @@ const examApi = {
 
     async createExam(data: any): Promise<Exam> {
         const response = await axiosInstance.post('/exams', data);
+        return response.data;
+    },
+
+    async updateExamStatus(id: string, status: string): Promise<Exam> {
+        const response = await axiosInstance.patch(`/exams/${id}/status`, { status });
         return response.data;
     },
 

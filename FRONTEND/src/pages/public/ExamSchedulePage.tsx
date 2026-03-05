@@ -28,7 +28,7 @@ const ExamSchedulePage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
             <Navbar />
             <div className="pt-20">
                 <SectionWrapper background="gradient" className="py-20">
@@ -40,23 +40,23 @@ const ExamSchedulePage = () => {
                         >
                             <div className="text-center mb-16">
                                 <Tag color="blue" className="mb-4 text-sm font-medium px-3 py-1 uppercase tracking-wider">Academics</Tag>
-                                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6 leading-tight">
                                     Examination Schedules
                                 </h1>
-                                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                                <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                                     Prepare for your upcoming assessments. Check dates, times, and subjects below.
                                 </p>
                             </div>
 
                             <div className="space-y-8">
                                 {exams.map((exam, index) => (
-                                    <Card key={index} className="shadow-lg border-0 overflow-hidden relative group hover:shadow-xl transition-shadow duration-300">
+                                    <Card key={index} className="shadow-lg border-0 dark:bg-slate-900 overflow-hidden relative group hover:shadow-xl transition-shadow duration-300">
                                         <div className="absolute top-0 left-0 w-2 h-full bg-primary" />
                                         <div className="p-2 md:p-6">
-                                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 pb-4 border-b border-gray-100">
+                                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 pb-4 border-b border-gray-100 dark:border-slate-800">
                                                 <div>
-                                                    <h2 className="text-2xl font-bold text-gray-800 mb-2">{exam.title}</h2>
-                                                    <div className="flex items-center text-gray-500">
+                                                    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">{exam.title}</h2>
+                                                    <div className="flex items-center text-gray-500 dark:text-gray-400">
                                                         <CalendarOutlined className="mr-2" /> {exam.dates}
                                                     </div>
                                                 </div>
@@ -65,9 +65,9 @@ const ExamSchedulePage = () => {
                                             <Timeline mode="left" className="ml-4">
                                                 {exam.schedule.map((item, i) => (
                                                     <Timeline.Item key={i} label={item.date} color="blue">
-                                                        <div className="bg-blue-50/50 p-4 rounded-lg ml-4 border border-blue-100 hover:bg-blue-50 transition-colors">
+                                                        <div className="bg-blue-50/50 dark:bg-slate-800 p-4 rounded-lg ml-4 border border-blue-100 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors">
                                                             <div className="flex flex-wrap justify-between items-center gap-2">
-                                                                <h4 className="font-bold text-lg text-gray-800">{item.subject}</h4>
+                                                                <h4 className="font-bold text-lg text-gray-800 dark:text-gray-200">{item.subject}</h4>
                                                                 <Tag icon={<ClockCircleOutlined />} color="default">{item.time} ({item.duration})</Tag>
                                                             </div>
                                                         </div>

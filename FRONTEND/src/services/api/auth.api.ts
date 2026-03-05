@@ -1,10 +1,11 @@
 import axios from 'axios';
+import authAxios from '../axios/authAxios';
 import { useAuthStore, User } from '../../store/authStore';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 export interface LoginCredentials {
-    email: string;
+    identifier: string;
     password: string;
 }
 
@@ -22,15 +23,13 @@ class AuthService {
     }
 
     async logout(): Promise<void> {
-        // Just hit the endpoint to clear cookies
-        await axios.post(
-            `${API_URL}/auth/logout`,
-            {},
-            {
-                withCredentials: true
-            }
-        );
-        useAuthStore.getState().clearAuth();
+        try {
+            await authAxios.post('/auth/logout');
+        } catch (error) {
+            console.warn('Logout API call failed, but clearing local state.', error);
+        } finally {
+            useAuthStore.getState().clearAuth();
+        }
     }
 
     async refreshToken(): Promise<void> {
@@ -44,6 +43,29 @@ class AuthService {
         const response = await axios.get(`${API_URL}/auth/me`, {
             withCredentials: true
             // headers: { Authorization... } // Not needed
+        });
+        return response.data;
+    }
+
+    async forgotPassword(email: string): Promise<{ message: string }> {
+        const response = await axios.post(`${API_URL}/auth/forgot-password`, { email });
+        return response.data;
+    }
+
+    async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+        const response = await axios.post(`${API_URL}/auth/reset-password`, { token, newPassword });
+        return response.data;
+    }
+
+    async changePassword(data: any): Promise<{ message: string }> {
+        const response = await axios.post(`${API_URL}/auth/change-password`, data, { withCredentials: true });
+        return response.data;
+    }
+
+    async updateProfile(formData: FormData): Promise<User> {
+        const response = await axios.patch(`${API_URL}/users/profile`, formData, {
+            withCredentials: true,
+            headers: { 'Content-Type': 'multipart/form-data' },
         });
         return response.data;
     }

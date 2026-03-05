@@ -4,7 +4,7 @@ import { CreateNoticeDto } from './dto/create-notice.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRole } from '../../database/schemas/user.schema';
+import { UserRole } from '../../shared/enums/roles.enum';
 
 @Controller('notice')
 @UseGuards(JwtAuthGuard, RolesGuard)

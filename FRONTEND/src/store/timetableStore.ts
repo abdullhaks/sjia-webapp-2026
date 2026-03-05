@@ -14,6 +14,12 @@ interface TimetableState {
     updateTimetable: (id: string, data: timetableApi.UpdateTimetableDto) => Promise<void>;
     deleteTimetable: (id: string) => Promise<void>;
     uploadFile: (file: File) => Promise<{ url: string; filename: string; originalName: string; size: number }>;
+
+    swapRequests: { sent: any[], received: any[] };
+    fetchSwapRequests: () => Promise<void>;
+    sendSwapRequest: (data: any) => Promise<void>;
+    respondSwapRequest: (id: string, action: 'approve' | 'reject') => Promise<void>;
+
     clearError: () => void;
 }
 
@@ -91,6 +97,40 @@ export const useTimetableStore = create<TimetableState>((set) => ({
             return result;
         } catch (error: any) {
             set({ error: error.response?.data?.message || 'Failed to upload file', uploadProgress: 0 });
+            throw error;
+        }
+    },
+
+    swapRequests: { sent: [], received: [] },
+    fetchSwapRequests: async () => {
+        set({ loading: true, error: null });
+        try {
+            const data = await timetableApi.getMySwapRequests();
+            set({ swapRequests: data, loading: false });
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || 'Failed to fetch swap requests', loading: false });
+        }
+    },
+    sendSwapRequest: async (data: any) => {
+        set({ loading: true, error: null });
+        try {
+            await timetableApi.requestSwap(data);
+            const swapData = await timetableApi.getMySwapRequests();
+            set({ swapRequests: swapData, loading: false });
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || 'Failed to send request', loading: false });
+            throw error;
+        }
+    },
+    respondSwapRequest: async (id: string, action: 'approve' | 'reject') => {
+        set({ loading: true, error: null });
+        try {
+            await timetableApi.respondToSwap(id, action);
+            const swapData = await timetableApi.getMySwapRequests();
+            const mySchedule = await timetableApi.getMySchedule(); // Refresh schedule alongside
+            set({ swapRequests: swapData, mySchedule, loading: false });
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || 'Failed to respond', loading: false });
             throw error;
         }
     },

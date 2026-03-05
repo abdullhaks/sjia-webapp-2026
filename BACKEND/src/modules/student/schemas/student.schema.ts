@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { UserRole } from '../../../shared/enums/roles.enum';
 
 export type StudentDocument = Student & Document;
 
@@ -14,9 +15,30 @@ export class Student {
     @Prop({ required: true })
     lastName: string;
 
-    // Optional: Link to User account if they have login access
+    // Auth fields added
+    @Prop({ required: true })
+    password?: string;
+
+    @Prop({ required: true, enum: UserRole, default: UserRole.STUDENT })
+    role: UserRole;
+
+    @Prop({ default: true })
+    isActive: boolean;
+
+    @Prop({ default: null })
+    refreshToken?: string;
+
     @Prop()
-    userId?: string;
+    lastLogin?: Date;
+
+    @Prop({ type: Object, default: null })
+    pushSubscription?: any;
+
+    @Prop({ default: null })
+    resetPasswordToken?: string;
+
+    @Prop({ default: null })
+    resetPasswordExpires?: Date;
 
     @Prop({ required: true })
     dateOfBirth: Date;
@@ -72,8 +94,8 @@ export class Student {
     @Prop()
     photoUrl?: string;
 
-    @Prop({ type: [Object] })
-    documents?: { title: string; url: string }[];
+    @Prop({ type: [{ title: String, type: { type: String, enum: ['file', 'link'] }, url: String, addedAt: { type: Date, default: Date.now } }], default: [] })
+    folder?: { _id?: any; title: string; type: 'file' | 'link'; url: string; addedAt?: Date }[];
 
     @Prop()
     councilPosition?: string; // e.g., 'Chairman', 'Vice Chairman', 'General Secretary', 'Arts Club Secretary'

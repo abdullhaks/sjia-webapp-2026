@@ -28,6 +28,10 @@ const attendanceApi = {
         return response.data;
     },
 
+    async markBulkAttendance(data: CreateAttendanceDto[]): Promise<void> {
+        await axiosInstance.post('/attendance/bulk', data);
+    },
+
     async getStudentAttendance(studentId: string, month?: number, year?: number): Promise<Attendance[]> {
         const params: any = {};
         if (month) params.month = month;

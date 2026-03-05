@@ -33,7 +33,7 @@ export class StudentRepository {
     }
 
     async findByUserId(userId: string): Promise<Student | null> {
-        return this.studentModel.findOne({ userId }).exec();
+        return this.studentModel.findById(userId).exec();
     }
 
     async findCouncilMembers(): Promise<Student[]> {
@@ -57,5 +57,25 @@ export class StudentRepository {
             throw new NotFoundException(`Student with ID ${id} not found`);
         }
         return deletedStudent;
+    }
+
+    async addFolderItem(id: string, item: { title: string; type: 'file' | 'link'; url: string }): Promise<Student> {
+        const student = await this.studentModel.findByIdAndUpdate(
+            id,
+            { $push: { folder: { ...item, addedAt: new Date() } } } as any,
+            { new: true }
+        ).exec();
+        if (!student) throw new NotFoundException('Student not found');
+        return student;
+    }
+
+    async removeFolderItem(id: string, itemId: string): Promise<Student> {
+        const student = await this.studentModel.findByIdAndUpdate(
+            id,
+            { $pull: { folder: { _id: itemId } } } as any,
+            { new: true }
+        ).exec();
+        if (!student) throw new NotFoundException('Student not found');
+        return student;
     }
 }

@@ -2,13 +2,15 @@ import { Injectable, ConflictException } from '@nestjs/common';
 import { StaffRepository } from './staff.repository';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
-import { UsersService } from '../users/users.service';
+import * as bcrypt from 'bcrypt';
+import { UserRole } from '../../shared/enums/roles.enum';
+import { NotificationService } from '../../shared/notification.service';
 
 @Injectable()
 export class StaffService {
     constructor(
         private readonly staffRepository: StaffRepository,
-        private readonly usersService: UsersService,
+        private readonly notificationService: NotificationService,
     ) { }
 
     async create(createStaffDto: CreateStaffDto) {
@@ -21,20 +23,51 @@ export class StaffService {
             );
         }
 
-        // Create User account
-        const user = await this.usersService.createUser({
-            email: createStaffDto.email || `${createStaffDto.employeeId}@sjia.edu`, // Fallback email
-            password: '12341234', // Default password
-            role: 'staff',
-            firstName: createStaffDto.firstName,
-            lastName: createStaffDto.lastName,
-            isActive: true,
-        });
+        // Determine password
+        let plainPassword = '12341234';
 
-        return this.staffRepository.create({
+        if (createStaffDto.passwordMode === 'auto') {
+            // Generate a random 8-character password
+            plainPassword = Math.random().toString(36).slice(-8);
+        } else if (createStaffDto.passwordMode === 'manual' && createStaffDto.password) {
+            plainPassword = createStaffDto.password;
+        }
+
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(plainPassword, salt);
+        const resolvedEmail = createStaffDto.email || `${createStaffDto.employeeId}@sjia.edu`;
+
+        const newStaff = await this.staffRepository.create({
             ...createStaffDto,
-            userId: (user as any)._id,
-        });
+            email: resolvedEmail,
+            password: hashedPassword,
+            role: UserRole.STAFF,
+            isActive: true,
+        } as any);
+
+        // Send email if requested
+        if (createStaffDto.sendEmail === 'true' || createStaffDto.sendEmail === true) {
+            await this.notificationService.sendEmail(
+                resolvedEmail,
+                'Your Staff Account has been Created',
+                `
+                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                    <h2>Assalamu Alaikum ${newStaff.firstName},</h2>
+                    <p>Your SJIA staff portal account has been successfully created.</p>
+                    <p><strong>Your Login Credentials:</strong></p>
+                    <ul>
+                        <li><strong>Email / Employee ID:</strong> ${resolvedEmail}</li>
+                        <li><strong>Password:</strong> ${plainPassword}</li>
+                    </ul>
+                    <p>Please log in and change your password as soon as possible for security reasons.</p>
+                    <p>Jazakallah Khair,</p>
+                    <p><strong>SJIA Administration</strong></p>
+                </div>
+                `
+            );
+        }
+
+        return newStaff;
     }
 
     async findAll(query: any = {}) {
@@ -51,7 +84,7 @@ export class StaffService {
 
     async update(id: string, updateStaffDto: UpdateStaffDto) {
 
-        if(updateStaffDto.salary){
+        if (updateStaffDto.salary) {
             updateStaffDto.salary = Number(updateStaffDto.salary);
         }
         return this.staffRepository.update(id, updateStaffDto);

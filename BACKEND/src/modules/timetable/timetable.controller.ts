@@ -24,7 +24,7 @@ import { UpdateTimetableDto } from './dto/update-timetable.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRole } from '../../database/schemas/user.schema';
+import { UserRole } from '../../shared/enums/roles.enum';
 
 @Controller('timetable')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -76,6 +76,33 @@ export class TimetableController {
   @Roles(UserRole.SUPERADMIN, UserRole.STAFF)
   create(@Body() createTimetableDto: CreateTimetableDto, @Request() req: any) {
     return this.timetableService.create(createTimetableDto, req.user.userId);
+  }
+
+  @Post('period-exchange')
+  @Roles(UserRole.STAFF, UserRole.SUPERADMIN)
+  async requestSwap(@Body() data: any, @Req() req: any) {
+    if (!req.user || !req.user.sub) throw new NotFoundException('User info missing');
+    return this.timetableService.requestPeriodSwap(data, req.user.sub);
+  }
+
+  @Get('period-exchange/my-requests')
+  @Roles(UserRole.STAFF, UserRole.SUPERADMIN)
+  async getMySwapRequests(@Req() req: any) {
+    const role = req.user.role || 'staff';
+    return this.timetableService.getMySwapRequests(req.user.sub, role);
+  }
+
+  @Patch('period-exchange/:id/respond')
+  @Roles(UserRole.STAFF)
+  async respondToSwapRequest(
+    @Param('id') id: string,
+    @Body('action') action: 'approve' | 'reject',
+    @Req() req: any
+  ) {
+    const staff = await this.staffService.findByUserId(req.user.sub);
+    if (!staff) throw new NotFoundException('Staff profile not found');
+    const teacherName = `${staff.firstName} ${staff.lastName}`;
+    return this.timetableService.respondToSwapRequest(id, action, req.user.sub, teacherName);
   }
 
   @Get()

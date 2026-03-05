@@ -10,6 +10,7 @@ interface AttendanceState {
     fetchStudentAttendance: (studentId: string, month?: number, year?: number) => Promise<void>;
     fetchAttendanceStats: (studentId: string) => Promise<void>;
     markAttendance: (data: CreateAttendanceDto) => Promise<void>;
+    markBulkAttendance: (data: CreateAttendanceDto[]) => Promise<void>;
     clearError: () => void;
 }
 
@@ -46,6 +47,17 @@ export const useAttendanceStore = create<AttendanceState>((set) => ({
             set({ loading: false });
         } catch (error: any) {
             set({ error: error.response?.data?.message || 'Failed to mark attendance', loading: false });
+            throw error;
+        }
+    },
+
+    markBulkAttendance: async (data) => {
+        set({ loading: true, error: null });
+        try {
+            await attendanceApi.markBulkAttendance(data);
+            set({ loading: false });
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || 'Failed to bulk mark attendance', loading: false });
             throw error;
         }
     },

@@ -23,7 +23,7 @@ import { UpdateSiteContentDto } from './dto/site-content.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRole } from '../../database/schemas/user.schema';
+import { UserRole } from '../../shared/enums/roles.enum';
 
 @Controller('content')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -44,6 +44,20 @@ export class ContentManagementController {
             filename: file.originalname, // S3 URL contains the unique name, but frontend might expect this
             originalName: file.originalname,
         };
+    }
+
+    // Media Manager Endpoints
+    @Get('media')
+    @Roles(UserRole.SUPERADMIN)
+    async findAllMedia() {
+        return this.s3Service.getAllFilesAsync();
+    }
+
+    @Delete('media')
+    @Roles(UserRole.SUPERADMIN)
+    async removeMedia(@Query('url') url: string) {
+        const success = await this.s3Service.deleteFile(url);
+        return { success };
     }
 
     // Gallery Endpoints

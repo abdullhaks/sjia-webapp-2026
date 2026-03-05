@@ -22,12 +22,12 @@ export class AuthController {
             maxAge: 15 * 1000,
         });
 
-        // 7 days for refresh token
+        // 30 days for refresh token
         res.cookie('refreshToken', result.refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
+            maxAge: 30 * 24 * 60 * 60 * 1000,
         });
 
         return result.user; // Only return user info

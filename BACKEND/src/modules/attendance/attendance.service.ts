@@ -30,6 +30,19 @@ export class AttendanceService {
         return newAttendance.save();
     }
 
+    async bulkMarkAttendance(records: CreateAttendanceDto[], userId: string): Promise<any> {
+        const operations = records.map(record => ({
+            updateOne: {
+                filter: { studentId: record.studentId, date: record.date },
+                update: { $set: { ...record, markedBy: userId } },
+                upsert: true
+            }
+        }));
+
+        if (operations.length === 0) return { matchedCount: 0, modifiedCount: 0, upsertedCount: 0 };
+        return this.attendanceModel.bulkWrite(operations as any[]);
+    }
+
     async getStudentAttendance(studentId: string, month?: number, year?: number): Promise<Attendance[]> {
         const query: any = { studentId };
 

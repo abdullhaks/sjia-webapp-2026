@@ -22,11 +22,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles 
     // and initial checkAuth call.
 
 
-    // 3. Role-Based Access Control (RBAC)
     if (allowedRoles && !allowedRoles.includes(user.role)) {
         console.warn(`Unauthorized access: User role ${user.role} not in [${allowedRoles.join(', ')}]`);
         // Redirect to their appropriate dashboard if unauthorized for this specific route
-        // or just landing page
+        if (user.role === 'superAdmin') return <Navigate to="/superadmin/dashboard" replace />;
+        if (user.role === 'staff') return <Navigate to="/staff/dashboard" replace />;
+        if (user.role === 'student') return <Navigate to="/student/dashboard" replace />;
         return <Navigate to="/" replace />;
     }
 

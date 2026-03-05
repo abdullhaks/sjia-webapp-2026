@@ -1,29 +1,18 @@
 import axiosInstance from '../axios/authAxios';
+import axios from 'axios';
 
 export interface Admission {
     _id: string;
     applicationId: string;
-    firstName: string;
-    lastName: string;
-    email: string;
+    studentName: string;
+    parentName: string;
     phone: string;
-    dateOfBirth: string;
-    gender: string;
-    program: string;
-    address: string;
-    city: string;
-    state: string;
-    pincode: string;
-    guardianName: string;
-    guardianPhone: string;
-    guardianRelation?: string;
-    previousSchooling?: {
-        schoolName: string;
-        lastClass: string;
-        year: number;
-        percentage: number;
-    };
-    status: 'Pending' | 'Approved' | 'Rejected';
+    email: string;
+    age: number;
+    preferredClass: string;
+    place: string;
+    status: 'Pending' | 'InterviewScheduled' | 'Approved' | 'Rejected';
+    interviewDate?: string;
     rejectionReason?: string;
     notes?: string;
     createdAt?: string;
@@ -31,42 +20,38 @@ export interface Admission {
 }
 
 export interface CreateAdmissionDto {
-    firstName: string;
-    lastName: string;
-    email: string;
+    studentName: string;
+    parentName: string;
     phone: string;
-    dateOfBirth: string;
-    gender: string;
-    program: string;
-    address: string;
-    city: string;
-    state: string;
-    pincode: string;
-    guardianName: string;
-    guardianPhone: string;
-    guardianRelation?: string;
-    previousSchooling?: {
-        schoolName: string;
-        lastClass: string;
-        year: number;
-        percentage: number;
-    };
+    email: string;
+    age: number;
+    preferredClass: string;
+    place: string;
 }
 
 export interface UpdateAdmissionStatusDto {
-    status: 'Approved' | 'Rejected';
+    status: 'InterviewScheduled' | 'Approved' | 'Rejected';
+    interviewDate?: string;
     rejectionReason?: string;
     notes?: string;
 }
 
 const admissionApi = {
+    // Public: submit application (no auth needed)
+    async submitPublicApplication(data: CreateAdmissionDto): Promise<Admission> {
+        const baseUrl = axiosInstance.defaults.baseURL || import.meta.env.VITE_API_URL || '';
+        const response = await axios.post(`${baseUrl}/admission/apply`, data);
+        return response.data;
+    },
+
+    // Admin: get all applications
     async getAdmissions(query?: any): Promise<Admission[]> {
         const response = await axiosInstance.get('/admission', { params: query });
         return response.data;
     },
 
     async createAdmission(data: CreateAdmissionDto): Promise<Admission> {
-        const response = await axiosInstance.post('/admission', data);
+        const response = await axiosInstance.post('/admission/apply', data);
         return response.data;
     },
 

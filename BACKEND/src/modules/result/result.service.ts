@@ -2,10 +2,48 @@ import { Injectable } from '@nestjs/common';
 import { ResultRepository } from './result.repository';
 import { CreateResultDto } from './dto/create-result.dto';
 import { UpdateResultDto } from './dto/update-result.dto';
+import { NotificationService } from '../../shared/notification.service';
 
 @Injectable()
 export class ResultService {
-    constructor(private readonly resultRepository: ResultRepository) { }
+    constructor(
+        private readonly resultRepository: ResultRepository,
+        private readonly notificationService: NotificationService,
+    ) { }
+
+    private async notifyIfPublished(result: any) {
+        if (result.status === 'Published' && result.studentId) {
+            const student = result.studentId as unknown as any;
+            const examTitle = result.examId?.title || 'Exam';
+
+            const subject = `Your results for ${examTitle} are out!`;
+            const html = `
+                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                    <h2>Assalamu Alaikum ${student.firstName},</h2>
+                    <p>Your results for the recent <strong>${examTitle}</strong> have been published.</p>
+                    <p>You scored <strong>${result.percentage}%</strong> (${result.totalObtainedMarks}/${result.totalMaxMarks}).</p>
+                    <p>Log in to your portal to view the detailed breakdown.</p>
+                    <p>Jazakallah Khair,</p>
+                    <p>SJIA Examinations</p>
+                </div>
+            `;
+            const pushPayload = {
+                title: 'Results Published! 📝',
+                body: `Your marks for ${examTitle} are now available. Score: ${result.percentage}%`,
+                url: '/student/results',
+            };
+
+            await this.notificationService.sendDualNotification({
+                email: student.email,
+                emailSubject: subject,
+                emailHtml: html,
+                pushSubscription: student.pushSubscription,
+                pushPayload,
+                recipientId: student._id?.toString() || student.id,
+                type: 'SUCCESS',
+            });
+        }
+    }
 
     async create(createResultDto: CreateResultDto) {
         // Calculate totals and percentage
@@ -21,7 +59,9 @@ export class ResultService {
             percentage: parseFloat(percentage.toFixed(2)),
         };
 
-        return this.resultRepository.create(resultData as any);
+        const result = await this.resultRepository.create(resultData as any);
+        await this.notifyIfPublished(result);
+        return result;
     }
 
     async findAll(query: any) {
@@ -34,6 +74,10 @@ export class ResultService {
 
     async findByStudent(studentId: string) {
         return this.resultRepository.findAll({ studentId, status: 'Published' });
+    }
+
+    async searchPublicResults(query: string) {
+        return this.resultRepository.searchPublicResults(query);
     }
 
     async findOne(id: string) {
@@ -56,7 +100,9 @@ export class ResultService {
             });
         }
 
-        return this.resultRepository.update(id, updateResultDto);
+        const result = await this.resultRepository.update(id, updateResultDto);
+        await this.notifyIfPublished(result);
+        return result;
     }
 
     async remove(id: string) {

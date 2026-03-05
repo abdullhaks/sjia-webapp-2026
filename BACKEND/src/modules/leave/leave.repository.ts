@@ -4,7 +4,6 @@ import { Model } from 'mongoose';
 import { Leave, LeaveDocument } from './schemas/leave.schema';
 import { CreateLeaveDto } from './dto/create-leave.dto';
 import { UpdateLeaveStatusDto } from './dto/update-leave-status.dto';
-import { User } from '../../database/schemas/user.schema';
 
 @Injectable()
 export class LeaveRepository {
@@ -12,7 +11,7 @@ export class LeaveRepository {
         @InjectModel(Leave.name) private leaveModel: Model<LeaveDocument>,
     ) { }
 
-    async create(user: User, createLeaveDto: CreateLeaveDto): Promise<Leave> {
+    async create(user: any, createLeaveDto: CreateLeaveDto): Promise<Leave> {
         const newLeave = new this.leaveModel({
             ...createLeaveDto,
             applicantId: (user as any)._id,
@@ -49,6 +48,7 @@ export class LeaveRepository {
                 },
                 { new: true }
             )
+            .populate('applicantId', 'email pushSubscription firstName')
             .exec();
 
         if (!leave) {

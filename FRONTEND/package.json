@@ -18,6 +18,7 @@
     "framer-motion": "^11.15.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.563.0",
+    "nodemailer": "^8.0.1",
     "react": "^18.3.1",
     "react-countup": "^6.5.3",
     "react-dom": "^18.3.1",
@@ -37,9 +38,11 @@
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@types/node": "^25.0.10",
+    "@types/nodemailer": "^7.0.11",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/react-responsive": "^8.0.8",
+    "@vercel/node": "^5.6.10",
     "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.17.0",
     "eslint-plugin-react-hooks": "^5.1.0",
@@ -47,6 +50,7 @@
     "globals": "^15.14.0",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.18.2",
-    "vite": "^6.0.5"
+    "vite": "^6.0.5",
+    "vite-plugin-pwa": "^1.2.0"
   }
 }

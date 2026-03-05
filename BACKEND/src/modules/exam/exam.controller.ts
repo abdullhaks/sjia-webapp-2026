@@ -15,7 +15,7 @@ import { UpdateExamDto } from './dto/update-exam.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRole } from '../../database/schemas/user.schema';
+import { UserRole } from '../../shared/enums/roles.enum';
 
 @Controller('exams')
 export class ExamController {
@@ -55,6 +55,13 @@ export class ExamController {
     @Roles(UserRole.SUPERADMIN)
     update(@Param('id') id: string, @Body() updateExamDto: UpdateExamDto) {
         return this.examService.update(id, updateExamDto);
+    }
+
+    @Patch(':id/status')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.SUPERADMIN)
+    updateStatus(@Param('id') id: string, @Body('status') status: string) {
+        return this.examService.update(id, { status } as any);
     }
 
     @Delete(':id')

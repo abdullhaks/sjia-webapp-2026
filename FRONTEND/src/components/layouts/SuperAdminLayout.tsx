@@ -13,7 +13,6 @@ import {
     FaCog,
     FaSignOutAlt,
     FaBars,
-    FaBell,
     FaSearch,
     FaImages,
     FaBook,
@@ -22,6 +21,8 @@ import {
 } from 'react-icons/fa';
 import { useAuthStore } from '../../store/authStore';
 import Avatar from '../common/Avatar';
+import NotificationDropdown from '../common/NotificationDropdown';
+import ThemeToggle from '../common/ThemeToggle';
 
 // Sidebar Items
 const sidebarItems = [
@@ -57,18 +58,18 @@ const SuperAdminLayout = () => {
     const handleLogout = async () => {
         try {
             await authService.logout();
-            window.location.href = '/login';
+            window.location.href = '/';
         } catch (error) {
             console.error('Logout failed:', error);
             // Fallback to local clear if API call fails
-            window.location.href = '/login';
+            window.location.href = '/';
         }
     };
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
     return (
-        <div className="min-h-screen bg-gray-50 flex overflow-hidden">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex overflow-hidden">
             {/* Mobile Backdrop */}
             <AnimatePresence>
                 {!isDesktop && isSidebarOpen && (
@@ -94,7 +95,7 @@ const SuperAdminLayout = () => {
                         }}
                         exit={{ x: -280, opacity: 0 }}
                         transition={{ duration: 0.3, ease: 'easeInOut' }} // Sync with margin transition
-                        className={`fixed left-0 top-0 h-screen bg-gradient-to-b from-purple-900 via-purple-800 to-indigo-900 text-white shadow-2xl z-30 overflow-hidden flex flex-col`}
+                        className={`fixed left-0 top-0 h-screen bg-gradient-to-b from-emerald-900 via-emerald-800 to-teal-900 text-white shadow-2xl z-30 overflow-hidden flex flex-col`}
                         style={{ width: '280px' }}
                     >
                         {/* Header */}
@@ -186,21 +187,21 @@ const SuperAdminLayout = () => {
                     }`}
             >
                 {/* Topbar */}
-                <header className="sticky top-0 z-10 bg-white/90 backdrop-blur-xl shadow-sm border-b border-gray-200/50 h-16 px-6 flex items-center justify-between">
+                <header className="sticky top-0 z-10 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-sm border-b border-gray-200/50 dark:border-slate-800 h-16 px-6 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={toggleSidebar}
-                            className="p-2.5 rounded-xl hover:bg-purple-50 text-gray-600 hover:text-purple-600 transition-all duration-200"
+                            className="p-2.5 rounded-xl hover:bg-emerald-50 dark:hover:bg-slate-800 text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200"
                         >
                             {isSidebarOpen ? <FaBars className="rotate-90 transition-transform" /> : <FaBars />}
                         </motion.button>
                         <div>
-                            <h2 className="text-xl font-bold text-gray-800 hidden sm:block">
+                            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 hidden sm:block">
                                 {sidebarItems.find(i => i.path === location.pathname)?.label || 'Dashboard'}
                             </h2>
-                            <p className="text-xs text-gray-500 hidden sm:block">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">
                                 Welcome back, {user?.firstName || 'Admin'}
                             </p>
                         </div>
@@ -213,19 +214,13 @@ const SuperAdminLayout = () => {
                             <input
                                 type="text"
                                 placeholder="Search anything..."
-                                className="w-72 pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500/20 focus:bg-white focus:border-purple-300 transition-all text-sm"
+                                className="w-72 pl-11 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:bg-white dark:focus:bg-slate-800 focus:border-emerald-300 transition-all text-sm text-gray-800 dark:text-gray-200"
                             />
                         </div>
 
+                        <ThemeToggle />
                         {/* Notifications */}
-                        <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="relative p-2.5 rounded-xl bg-gray-50 hover:bg-purple-50 text-gray-600 hover:text-purple-600 transition-all duration-200"
-                        >
-                            <FaBell className="text-lg" />
-                            <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse" />
-                        </motion.button>
+                        <NotificationDropdown />
 
                         {/* Profile Quick Access */}
                         <motion.div

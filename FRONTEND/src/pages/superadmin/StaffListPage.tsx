@@ -91,7 +91,8 @@ const StaffListPage = () => {
             setIsModalOpen(false);
             setEditingStaff(null);
         } catch (error) {
-            // Error already handled in store
+            // Re-throw so the form can catch and display validation field errors natively
+            throw error;
         }
     };
 
@@ -101,7 +102,7 @@ const StaffListPage = () => {
     };
 
     // Filter staff based on search and filters
-    const filteredStaff = staff.filter((member) => {
+    const filteredStaff = (staff || []).filter((member) => {
         const matchesSearch =
             searchText === '' ||
             member.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -109,7 +110,7 @@ const StaffListPage = () => {
             member.employeeId.toLowerCase().includes(searchText.toLowerCase());
 
         const matchesDepartment = departmentFilter === 'all' || member.department === departmentFilter;
-        const matchesStatus = statusFilter === 'active' ? member.status === 'Active' : member.status === statusFilter;
+        const matchesStatus = statusFilter === 'active' ? (member.status === 'Active' || !member.status) : member.status === statusFilter;
 
         return matchesSearch && matchesDepartment && matchesStatus;
     });
@@ -247,9 +248,9 @@ const StaffListPage = () => {
                     <Button icon={<FaFilter />}>More Filters</Button>
                 </div>
 
-                {loading && staff.length === 0 ? (
+                {loading && (!staff || staff.length === 0) ? (
                     <LoadingSpinner size="lg" />
-                ) : filteredStaff.length === 0 ? (
+                ) : (!filteredStaff || filteredStaff.length === 0) ? (
                     <EmptyState
                         icon={<FaInbox />}
                         title="No Staff Found"
@@ -285,7 +286,7 @@ const StaffListPage = () => {
                 onCancel={handleFormCancel}
                 footer={null}
                 width={800}
-                destroyOnClose
+                destroyOnHidden
             >
                 <StaffForm
                     initialValues={editingStaff || undefined}

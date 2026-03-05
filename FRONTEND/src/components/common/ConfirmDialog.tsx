@@ -30,10 +30,10 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             open={open}
             title={
                 <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full ${danger ? 'bg-red-100' : 'bg-primary/10'} flex items-center justify-center`}>
-                        <FiAlertTriangle className={`text-xl ${danger ? 'text-red-500' : 'text-primary'}`} />
+                    <div className={`w-10 h-10 rounded-full ${danger ? 'bg-red-100 dark:bg-red-900/30' : 'bg-primary/10 dark:bg-emerald-900/30'} flex items-center justify-center`}>
+                        <FiAlertTriangle className={`text-xl ${danger ? 'text-red-500' : 'text-primary dark:text-emerald-400'}`} />
                     </div>
-                    <span className="text-lg font-semibold">{title}</span>
+                    <span className="text-lg font-semibold dark:text-gray-100">{title}</span>
                 </div>
             }
             onOk={onConfirm}
@@ -47,7 +47,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             }}
             centered
         >
-            <p className="text-gray-600 mt-4">{message}</p>
+            <p className="text-gray-600 dark:text-gray-300 mt-4">{message}</p>
         </Modal>
     );
 };

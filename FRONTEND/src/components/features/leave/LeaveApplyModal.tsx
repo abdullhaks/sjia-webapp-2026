@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Form, Input, DatePicker, Select, Button } from 'antd';
 import { message } from '../../../components/common/AntdStaticProvider';
 import { CalendarOutlined } from '@ant-design/icons';
+import { useLeaveStore } from '../../../store/leaveStore';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -17,20 +18,28 @@ const LeaveApplyModal: React.FC<LeaveApplyModalProps> = ({ visible, onCancel, on
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
 
+    const { createLeave } = useLeaveStore();
+
     const onFinish = async (values: any) => {
         setLoading(true);
         try {
-            // Simulate API call
-            console.log('Applying for leave:', values);
-            setTimeout(() => {
-                message.success('Leave applied successfully!');
-                setLoading(false);
-                form.resetFields();
-                onSuccess();
-                onCancel();
-            }, 1000);
+            const payload = {
+                type: values.type,
+                startDate: values.dates[0].format('YYYY-MM-DD'),
+                endDate: values.dates[1].format('YYYY-MM-DD'),
+                reason: values.reason,
+            };
+
+            await createLeave(payload);
+
+            message.success('Leave applied successfully!');
+            form.resetFields();
+            onSuccess();
+            onCancel();
         } catch (error) {
             message.error('Failed to apply for leave');
+            console.error(error);
+        } finally {
             setLoading(false);
         }
     };

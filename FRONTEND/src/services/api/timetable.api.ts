@@ -104,3 +104,19 @@ export const updateTimetable = async (id: string, data: UpdateTimetableDto): Pro
 export const deleteTimetable = async (id: string): Promise<void> => {
     await axiosInstance.delete(`/timetable/${id}`);
 };
+
+// Period Exchange
+export const requestSwap = async (data: any): Promise<any> => {
+    const response = await axiosInstance.post('/timetable/period-exchange', data);
+    return response.data;
+};
+
+export const getMySwapRequests = async (): Promise<any> => {
+    const response = await axiosInstance.get('/timetable/period-exchange/my-requests');
+    return response.data;
+};
+
+export const respondToSwap = async (id: string, action: 'approve' | 'reject'): Promise<any> => {
+    const response = await axiosInstance.patch(`/timetable/period-exchange/${id}/respond`, { action });
+    return response.data;
+};

@@ -15,7 +15,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ icon, title, description, actio
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center justify-center py-16 px-4"
         >
-            <div className="glass-white rounded-2xl p-12 max-w-md w-full text-center">
+            <div className="glass-white dark:bg-slate-800/80 rounded-2xl p-12 max-w-md w-full text-center border dark:border-slate-700">
                 {icon && (
                     <motion.div
                         initial={{ scale: 0 }}
@@ -28,9 +28,9 @@ const EmptyState: React.FC<EmptyStateProps> = ({ icon, title, description, actio
                         </div>
                     </motion.div>
                 )}
-                <h3 className="text-xl font-bold text-gray-800 mb-2">{title}</h3>
+                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">{title}</h3>
                 {description && (
-                    <p className="text-gray-500 mb-6">{description}</p>
+                    <p className="text-gray-500 dark:text-gray-400 mb-6">{description}</p>
                 )}
                 {action && <div className="mt-4">{action}</div>}
             </div>

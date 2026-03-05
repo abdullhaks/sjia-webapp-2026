@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
-import { User } from '../../../database/schemas/user.schema';
 
 export type LeaveDocument = Leave & Document;
 
@@ -19,8 +18,8 @@ export enum LeaveType {
 
 @Schema({ timestamps: true })
 export class Leave {
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
-    applicantId: User;
+    @Prop({ type: MongooseSchema.Types.ObjectId, required: true })
+    applicantId: any;
 
     @Prop({ required: true })
     firstName: string; // Snapshot of name for easy display
