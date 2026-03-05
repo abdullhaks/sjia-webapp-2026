@@ -25,24 +25,24 @@ export default defineConfig({
         start_url: '/',
         orientation: 'portrait-primary',
         categories: ['education'],
-        icons: [
-          {
-            src: '/pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: '/pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          },
-          {
-            src: '/pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
-          }
-        ]
+        // icons: [
+        //   {
+        //     src: '/pwa-192x192.png',
+        //     sizes: '192x192',
+        //     type: 'image/png'
+        //   },
+        //   {
+        //     src: '/pwa-512x512.png',
+        //     sizes: '512x512',
+        //     type: 'image/png'
+        //   },
+        //   {
+        //     src: '/pwa-512x512.png',
+        //     sizes: '512x512',
+        //     type: 'image/png',
+        //     purpose: 'any maskable'
+        //   }
+        // ]
       },
       workbox: {
         // Pre-cache application shell — all major chunks, CSS, HTML, and static assets
@@ -138,7 +138,7 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('react-dom') || id.includes('react-router-dom')) return 'vendor-react';
+            if (id.includes('react-dom') || id.includes('react-router') || id.match(/node_modules\/react\//)) return 'vendor-react';
             if (id.includes('antd') || id.includes('@ant-design')) return 'vendor-antd';
             if (id.includes('recharts') || id.includes('d3-')) return 'vendor-charts';
             if (id.includes('framer-motion')) return 'vendor-motion';
