@@ -21,18 +21,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Configure Nodemailer transporter options (reusing existing env vars)
-    if (!process.env.VITE_EMAIL_USER || !process.env.VITE_EMAIL_PASS) {
-        console.warn('Email credentials not configured.');
-        return res.status(500).json({ message: 'Email credentials not configured.' });
-    }
+    // if (!process.env.VITE_EMAIL_USER || !process.env.VITE_EMAIL_PASS) {
+    //     console.warn('Email credentials not configured.');
+    //     return res.status(500).json({ message: 'Email credentials not configured.' });
+    // }
 
     
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: process.env.VITE_EMAIL_USER,
-            pass: process.env.VITE_EMAIL_PASS,
+            user:"muthuab786@gmail.com",
+            pass:"pmkd wrle gtte uqxh",
         },
     });
 
@@ -90,7 +90,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         if (emailHtml && subject) {
             await transporter.sendMail({
-                from: `"Sheikh Jeelani Islamic Academy" <${process.env.VITE_EMAIL_USER}>`,
+                from: `"Sheikh Jeelani Islamic Academy" <"muthuab786@gmail.com">`,
                 to: email,
                 subject,
                 html: emailHtml,
