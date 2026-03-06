@@ -14,19 +14,21 @@ export class AuthController {
     async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
         const result = await this.authService.login(loginDto);
 
+        const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
+
         // 15 seconds for access token
         res.cookie('accessToken', result.accessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: 15 * 1000,
         });
 
         // 30 days for refresh token
         res.cookie('refreshToken', result.refreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: 30 * 24 * 60 * 60 * 1000,
         });
 
@@ -44,10 +46,12 @@ export class AuthController {
 
         const result = await this.authService.refreshTokens(refreshToken);
 
+        const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
+
         res.cookie('accessToken', result.accessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: 15 * 1000,
         });
 
@@ -65,16 +69,18 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.OK)
     async logout(@Request() req: any, @Res({ passthrough: true }) res: Response) {
+        const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
+
         // Clear cookies with same options as creation
         res.clearCookie('accessToken', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
         });
         res.clearCookie('refreshToken', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
         });
 
         return this.authService.logout(req.user.sub);
