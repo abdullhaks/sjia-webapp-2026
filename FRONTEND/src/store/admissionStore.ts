@@ -55,7 +55,7 @@ export const useAdmissionStore = create<AdmissionState>((set) => ({
 
             // Trigger serverless email function
             try {
-                await fetch('/api/admission-email', {
+                const response = await fetch('/api/admission-email', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -65,8 +65,13 @@ export const useAdmissionStore = create<AdmissionState>((set) => ({
                         parentName: data.parentName,
                     }),
                 });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    console.error("Vercel Email Function returned an error:", response.status, errorData);
+                }
             } catch (emailError) {
-                console.error("Failed to send admission email via serverless function", emailError);
+                console.error("Failed to send admission email via serverless function (Network error)", emailError);
             }
 
             set({ loading: false });
@@ -89,7 +94,7 @@ export const useAdmissionStore = create<AdmissionState>((set) => ({
             try {
                 // If status provides email content triggers, we send them. The API route ignores unknown types.
                 if (['InterviewScheduled', 'Approved', 'Rejected'].includes(data.status)) {
-                    await fetch('/api/admission-email', {
+                    const response = await fetch('/api/admission-email', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -104,9 +109,14 @@ export const useAdmissionStore = create<AdmissionState>((set) => ({
                             }
                         }),
                     });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        console.error("Vercel Email Function returned an error:", response.status, errorData);
+                    }
                 }
             } catch (emailError) {
-                console.error("Failed to send status update email via serverless function", emailError);
+                console.error("Failed to send status update email via serverless function (Network error)", emailError);
             }
 
             set((state) => ({
