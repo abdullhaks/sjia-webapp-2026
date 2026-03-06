@@ -36,10 +36,12 @@ export interface UpdateAdmissionStatusDto {
     notes?: string;
 }
 
+import { API_URL } from '../../config/env';
+
 const admissionApi = {
     // Public: submit application (no auth needed)
     async submitPublicApplication(data: CreateAdmissionDto): Promise<Admission> {
-        const baseUrl = axiosInstance.defaults.baseURL || import.meta.env.VITE_API_URL || '';
+        const baseUrl = axiosInstance.defaults.baseURL || API_URL || '';
         const response = await axios.post(`${baseUrl}/admission/apply`, data);
         return response.data;
     },

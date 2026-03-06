@@ -2,7 +2,7 @@ import axios from 'axios';
 import authAxios from '../axios/authAxios';
 import { useAuthStore, User } from '../../store/authStore';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { API_URL } from '../../config/env';
 
 export interface LoginCredentials {
     identifier: string;

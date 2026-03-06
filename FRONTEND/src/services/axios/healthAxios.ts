@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
 // Get API URL from environment variables
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { API_URL } from '../../config/env';
 
 // Create axios instance for health checks
 const healthAxios: AxiosInstance = axios.create({
