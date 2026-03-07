@@ -33,11 +33,15 @@ export class NotificationService {
             host: 'smtp.gmail.com',
             port: 587,
             secure: false,
+            family: 4,
+            tls: {
+                rejectUnauthorized: false,
+            },
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS,
             },
-        });
+        } as nodemailer.TransportOptions);
 
         if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
             webpush.setVapidDetails(
