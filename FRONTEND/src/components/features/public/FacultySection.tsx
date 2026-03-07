@@ -60,53 +60,53 @@ const FacultySection: React.FC = () => {
     const defaultStaffData: StaffData = {
         authorities: [
             {
-                id: '1', name: 'Dr. Abdullah Rahman', position: 'Chancellor',
-                qualification: 'PhD Islamic Studies', experience: '30 years',
-                specialization: 'Islamic Philosophy', category: 'authority', order: 1
+                id: '1', name: 'Sheikh Usthad Abdhu Raheem Musliyar Valapuram', position: 'Principal',
+                qualification: '', experience: '30+ years',
+                specialization: '', category: 'authority', order: 1
             },
             {
-                id: '2', name: 'Prof. Ameen K.', position: 'Vice Chancellor',
-                qualification: 'PhD Education', experience: '25 years',
-                specialization: 'Islamic Pedagogy', category: 'authority', order: 2
+                id: '2', name: 'Abdullah Musliyar karaaparambu', position: 'Vice Principal',
+                qualification: '', experience: '30+ years',
+                specialization: '', category: 'authority', order: 2
             },
             {
-                id: '3', name: 'Dr. Omar Hassan', position: 'Dean of Studies',
-                qualification: 'PhD Quranic Studies', experience: '22 years',
-                specialization: 'Quranic Exegesis', category: 'authority', order: 3
+                id: '3', name: 'Sheikh Hamza Usthad Moonakkal', position: '',
+                qualification: '', experience: '30+ years',
+                specialization: '', category: 'authority', order: 3
             },
         ],
         hods: [
             {
-                id: '4', name: 'Sheikh Muhammad Ali', position: 'HOD - Islamic Studies',
-                qualification: 'Master Islamic Jurisprudence', experience: '20 years',
-                specialization: 'Fiqh', category: 'hod', order: 1
+                id: '4', name: 'Sheikh Fazlullah faizy valiyora', position: '',
+                qualification: 'faizy', experience: '10+ years',
+                specialization: '', category: '', order: 1
             },
             {
-                id: '5', name: 'Dr. Fatima Zahra', position: 'HOD - Arabic Language',
-                qualification: 'PhD Arabic Literature', experience: '18 years',
-                specialization: 'Classical Arabic', category: 'hod', order: 2
+                id: '5', name: 'Sheikh Abdul Majeed Hudavi', position: '',
+                qualification: 'Hudavi', experience: '10+ years',
+                specialization: '', category: '', order: 2
             },
             {
-                id: '6', name: 'Dr. Hassan Rashid', position: 'HOD - General Studies',
-                qualification: 'PhD History', experience: '16 years',
-                specialization: 'Islamic Civilization', category: 'hod', order: 3
+                id: '6', name: 'Sheikh Sulaiman Hudavi', position: '',
+                qualification: 'Hudavi', experience: '10+ years',
+                specialization: '', category: '', order: 3
             },
         ],
         teachers: [
             {
-                id: '7', name: 'Ustadh Yusuf Ali', position: 'Senior Lecturer',
-                qualification: 'MA Islamic Studies', experience: '12 years',
-                specialization: 'Hadith Sciences', category: 'teacher', order: 1
+                id: '7', name: 'Musthafa Hudavi', position: '',
+                qualification: 'Hudavi', experience: '10+ years',
+                specialization: '', category: '', order: 1
             },
             {
-                id: '8', name: 'Ustadha Aisha Begum', position: 'Lecturer',
-                qualification: 'MA Arabic', experience: '10 years',
-                specialization: 'Arabic Grammar', category: 'teacher', order: 2
+                id: '8', name: 'Rafeeq Hudavi', position: '',
+                qualification: 'Hudavi', experience: '10+ years',
+                specialization: '', category: '', order: 2
             },
             {
-                id: '9', name: 'Ustadh Khalid Ibrahim', position: 'Lecturer',
-                qualification: 'BA Islamic Studies', experience: '8 years',
-                specialization: 'Quran & Tajweed', category: 'teacher', order: 3
+                id: '9', name: 'Riyas Master', position: '',
+                qualification: 'msw', experience: '5+ years',
+                specialization: '', category: '', order: 3
             },
         ],
     };
