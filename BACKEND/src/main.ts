@@ -67,6 +67,10 @@ async function bootstrap() {
   // Enable Mongo Exception Filters globally
   app.useGlobalFilters(new MongoExceptionFilter());
 
+  app.getHttpAdapter().get('/', (req: any, res: any) => {
+    res.send('SJIA Backend is running');
+  });
+
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
   logger.log(`🚀 Server is running on: http://localhost:${port}/api`);
