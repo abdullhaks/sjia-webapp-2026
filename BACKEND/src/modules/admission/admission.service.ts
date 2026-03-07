@@ -20,13 +20,15 @@ export class AdmissionService {
     async create(createAdmissionDto: CreateAdmissionDto) {
         const admission = await this.admissionRepository.create(createAdmissionDto);
 
-        // Send thank-you email natively via Backend
-        const emailHtml = applicationReceivedEmail(admission.studentName, admission.parentName);
-        await this.notificationService.sendEmail(
-            admission.email,
-            'Application Received - Sheikh Jeelani Islamic Academy',
-            emailHtml,
-        );
+        // Send thank-you email natively via Backend if enabled
+        if (process.env.ENABLE_BACKEND_ADMISSION_EMAILS === 'true') {
+            const emailHtml = applicationReceivedEmail(admission.studentName, admission.parentName);
+            await this.notificationService.sendEmail(
+                admission.email,
+                'Application Received - Sheikh Jeelani Islamic Academy',
+                emailHtml,
+            );
+        }
 
         return admission;
     }
@@ -87,8 +89,10 @@ export class AdmissionService {
             }
 
             if (emailHtml && subject) {
-                // Send email natively via Backend
-                await this.notificationService.sendEmail(admission.email, subject, emailHtml);
+                // Send email natively via Backend if enabled
+                if (process.env.ENABLE_BACKEND_ADMISSION_EMAILS === 'true') {
+                    await this.notificationService.sendEmail(admission.email, subject, emailHtml);
+                }
             }
         }
 

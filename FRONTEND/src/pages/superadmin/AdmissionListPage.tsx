@@ -10,6 +10,12 @@ import { FaInbox } from 'react-icons/fa';
 import AdmissionDetailModal from '../../components/common/AdmissionDetailModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import dayjs from 'dayjs';
+import { sendAdmissionEmail } from '../../utils/emailjs-service';
+import {
+    generateInterviewScheduledContent,
+    generateApplicationApprovedContent,
+    generateApplicationRejectedContent
+} from '../../utils/email-content-generators';
 
 const { Option } = Select;
 
@@ -58,6 +64,52 @@ const AdmissionListPage = () => {
                 payload.notes = statusNotes;
             }
             await updateAdmissionStatus(statusModal.admission._id, payload);
+
+            // Trigger EmailJS email based on status
+            let emailHtml = '';
+            let subject = '';
+
+            if (statusModal.type === 'InterviewScheduled') {
+                const dateStr = interviewDate!.toDate().toLocaleDateString('en-IN', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                });
+                emailHtml = generateInterviewScheduledContent(
+                    statusModal.admission.studentName,
+                    statusModal.admission.parentName,
+                    dateStr,
+                    payload.notes
+                );
+                subject = 'Interview Scheduled - Sheikh Jeelani Islamic Academy';
+            } else if (statusModal.type === 'Approved') {
+                emailHtml = generateApplicationApprovedContent(
+                    statusModal.admission.studentName,
+                    statusModal.admission.parentName,
+                    payload.notes
+                );
+                subject = 'Application Approved - Sheikh Jeelani Islamic Academy';
+            } else if (statusModal.type === 'Rejected') {
+                emailHtml = generateApplicationRejectedContent(
+                    statusModal.admission.studentName,
+                    statusModal.admission.parentName,
+                    payload.rejectionReason
+                );
+                subject = 'Application Update - Sheikh Jeelani Islamic Academy';
+            }
+
+            if (emailHtml && subject) {
+                await sendAdmissionEmail({
+                    studentName: statusModal.admission.studentName,
+                    parentName: statusModal.admission.parentName,
+                    email: statusModal.admission.email,
+                    subject: subject,
+                    message: emailHtml,
+                });
+            }
             const actionLabel = statusModal.type === 'InterviewScheduled' ? 'Interview scheduled' : statusModal.type === 'Approved' ? 'Approved' : 'Rejected';
             message.success(`Application ${actionLabel} — email sent to applicant`);
             setStatusModal({ open: false, admission: null, type: 'Approved' });

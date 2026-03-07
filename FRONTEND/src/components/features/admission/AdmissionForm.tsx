@@ -4,6 +4,8 @@ import { message } from '../../../components/common/AntdStaticProvider';
 import { UploadOutlined, SolutionOutlined, UserOutlined, BookOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 import admissionApi from '../../../services/api/admission.api';
+import { sendAdmissionEmail } from '../../../utils/emailjs-service';
+import { generateApplicationReceivedContent } from '../../../utils/email-content-generators';
 import { useSettingsStore } from '../../../store/settingsStore';
 import { useCMSStore } from '../../../store/cmsStore';
 
@@ -62,6 +64,20 @@ const AdmissionForm: React.FC = () => {
             };
 
             await admissionApi.createAdmission(submissionData);
+
+            // Send EmailJS application received email
+            const emailHtml = generateApplicationReceivedContent(
+                `${values.firstName} ${values.lastName}`,
+                values.guardianDetails?.name || 'Parent/Guardian'
+            );
+            await sendAdmissionEmail({
+                studentName: `${values.firstName} ${values.lastName}`,
+                parentName: values.guardianDetails?.name || 'Parent/Guardian',
+                email: values.email,
+                subject: 'Application Received - Sheikh Jeelani Islamic Academy',
+                message: emailHtml,
+            });
+
             message.success('Application Submitted Successfully! We will contact you soon.');
             form.resetFields();
             setCurrent(0);
