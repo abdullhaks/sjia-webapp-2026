@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { FaPlay, FaPause, FaVolumeMute, FaVolumeUp, FaExpand, FaCompress } from 'react-icons/fa';
 import SectionWrapper from '../../common/SectionWrapper';
 import AnimatedHeading from '../../common/AnimatedHeading';
+import promo from '/promo.mp4'
 
 const VideoSection: React.FC = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -17,7 +18,7 @@ const VideoSection: React.FC = () => {
     const controlsTimeout = useRef<NodeJS.Timeout | null>(null);
 
     // Demo video URL — replace with actual college promotion video
-    const videoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
+    const videoUrl = promo;
 
     useEffect(() => {
         const video = videoRef.current;
