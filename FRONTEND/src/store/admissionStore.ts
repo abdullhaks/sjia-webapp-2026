@@ -53,27 +53,6 @@ export const useAdmissionStore = create<AdmissionState>((set) => ({
         try {
             const admission = await admissionApi.submitPublicApplication(data);
 
-            // Trigger serverless email function
-            try {
-                const response = await fetch('/api/admission-email', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        type: 'received',
-                        email: data.email,
-                        studentName: data.studentName,
-                        parentName: data.parentName,
-                    }),
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    console.error("Vercel Email Function returned an error:", response.status, errorData);
-                }
-            } catch (emailError) {
-                console.error("Failed to send admission email via serverless function (Network error)", emailError);
-            }
-
             set({ loading: false });
             return admission;
         } catch (error: any) {
@@ -89,35 +68,6 @@ export const useAdmissionStore = create<AdmissionState>((set) => ({
         set({ loading: true, error: null });
         try {
             const updatedAdmission = await admissionApi.updateStatus(id, data);
-
-            // Trigger serverless email function
-            try {
-                // If status provides email content triggers, we send them. The API route ignores unknown types.
-                if (['InterviewScheduled', 'Approved', 'Rejected'].includes(data.status)) {
-                    const response = await fetch('/api/admission-email', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            type: data.status,
-                            email: updatedAdmission.email, // using updated admission's email
-                            studentName: updatedAdmission.studentName,
-                            parentName: updatedAdmission.parentName,
-                            data: {
-                                interviewDate: data.interviewDate,
-                                notes: data.notes,
-                                rejectionReason: data.rejectionReason,
-                            }
-                        }),
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({}));
-                        console.error("Vercel Email Function returned an error:", response.status, errorData);
-                    }
-                }
-            } catch (emailError) {
-                console.error("Failed to send status update email via serverless function (Network error)", emailError);
-            }
 
             set((state) => ({
                 admissions: state.admissions.map((a) =>
